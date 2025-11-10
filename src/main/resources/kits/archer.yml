@@ -1,16 +1,16 @@
-name: "&c&lArcher"
-description: "&7Master of ranged combat"
+name: "<red><bold>Archer</bold></red>"
+description: "<gray>Master of ranged combat</gray>"
 icon:
   material: BOW
-  name: "&c&lArcher Kit"
+  name: "<red><bold>Archer Kit</bold></red>"
   lore:
-    - "&7Dominate with bow and arrows"
+    - "<gray>Dominate with bow and arrows</gray>"
     - ""
-    - "&eAbility: &eTeleport"
-    - "&7Teleport behind your target!"
+    - "<yellow>Ability: <light_purple>Teleport</light_purple></yellow>"
+    - "<gray>Teleport behind your target!</gray>"
     - ""
-    - "&7Price: &a$750"
-    - "&aClick to select!"
+    - "<gray>Price: <green>$750</green></gray>"
+    - "<green>Click to select!</green>"
 
 permission: "kitpvp.kit.archer"
 price: 750
