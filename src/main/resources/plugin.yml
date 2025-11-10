@@ -1,0 +1,99 @@
+name: GotCraftKitPvp
+version: '1.0-SNAPSHOT'
+main: me.lubomirstankov.gotCraftKitPvp.GotCraftKitPvp
+api-version: '1.21'
+author: lubomirstankov
+description: Professional KitPvP plugin for Paper servers
+softdepend: [Vault, PlaceholderAPI, ProtocolLib]
+
+commands:
+  kitpvp:
+    description: Main KitPvP command
+    usage: /kitpvp [help|reload|setspawn|setzone|createkit|editkit|deletekit|gui]
+    aliases: [kp]
+  kits:
+    description: Open kit selection GUI
+    usage: /kits
+    aliases: [kit]
+  stats:
+    description: View player statistics
+    usage: /stats [player]
+  leaderboard:
+    description: View top players
+    usage: /leaderboard
+    aliases: [lb, top]
+  givemoney:
+    description: Give money to a player
+    usage: /givemoney <player> <amount>
+    aliases: [givecoins, addmoney]
+    permission: kitpvp.command.givemoney
+
+permissions:
+  kitpvp.*:
+    description: All KitPvP permissions
+    children:
+      kitpvp.admin: true
+      kitpvp.kit.*: true
+      kitpvp.ability.*: true
+  kitpvp.admin:
+    description: Admin permissions
+    default: op
+    children:
+      kitpvp.command.reload: true
+      kitpvp.command.setspawn: true
+      kitpvp.command.givemoney: true
+      kitpvp.command.setzone: true
+      kitpvp.command.createkit: true
+      kitpvp.command.editkit: true
+      kitpvp.command.deletekit: true
+      kitpvp.command.gui: true
+  kitpvp.command.reload:
+    description: Reload configuration
+    default: op
+  kitpvp.command.setspawn:
+    description: Set arena spawn
+    default: op
+  kitpvp.command.setzone:
+    description: Create zones
+    default: op
+  kitpvp.command.createkit:
+    description: Create kits
+    default: op
+  kitpvp.command.editkit:
+    description: Edit kits
+    default: op
+  kitpvp.command.givemoney:
+    description: Give money to players
+    default: op
+  kitpvp.command.deletekit:
+    description: Delete kits
+    default: op
+  kitpvp.command.gui:
+    description: Open admin GUI
+    default: op
+  kitpvp.kit.*:
+    description: Access to all kits
+    children:
+      kitpvp.kit.warrior: true
+      kitpvp.kit.archer: true
+      kitpvp.kit.tank: true
+  kitpvp.kit.warrior:
+    description: Access to Warrior kit
+    default: true
+  kitpvp.kit.archer:
+    description: Access to Archer kit
+    default: true
+  kitpvp.kit.tank:
+    description: Access to Tank kit
+    default: true
+  kitpvp.ability.*:
+    description: Access to all abilities
+    children:
+      kitpvp.ability.dash: true
+      kitpvp.ability.heal: true
+      kitpvp.ability.fireball: true
+      kitpvp.ability.freeze: true
+      kitpvp.ability.lightning: true
+      kitpvp.ability.teleport: true
+      kitpvp.ability.invisibility: true
+      kitpvp.ability.strength: true

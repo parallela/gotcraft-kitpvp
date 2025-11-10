@@ -1,0 +1,126 @@
+# Messages Configuration
+# MiniMessage Format Only
+# Use modern formatting with tags like <gradient>, <rainbow>, <bold>, etc.
+
+# MiniMessage Examples:
+# <gradient:red:blue>Gradient Text</gradient>
+# <rainbow>Rainbow Text</rainbow>
+# <gold><bold>Bold Gold</bold></gold>
+# <red>Red <green>Green</green></red>
+# <click:run_command:/help>Click me!</click>
+# <hover:show_text:'Hover text'>Hover over me</hover>
+
+# Placeholders: %player%, %killer%, %victim%, %kills%, %deaths%, %streak%, %kit%, etc.
+
+# General Messages
+no-permission: "<red>You don't have permission to do that!"
+reload-success: "<gradient:#00ffff:#00ff00>Configuration reloaded successfully!</gradient>"
+invalid-command: "<red>Invalid command! Use <yellow>/kitpvp help</yellow> for help."
+player-only: "<red>This command can only be executed by players!"
+player-not-found: "<red>Player not found!"
+
+# Arena Messages
+spawn-set: "<gradient:#00ffff:#00ff00>Arena spawn set to your location!</gradient>"
+teleported-to-spawn: "<green>Teleported to spawn!"
+
+# Zone Messages
+zone-created: "<green>Zone <yellow>%zone%</yellow> created successfully!"
+zone-deleted: "<red>Zone <yellow>%zone%</yellow> deleted!"
+zone-selection-start: "<aqua>Right-click two corners with the stick to select the zone area."
+zone-pos1-set: "<green>Position 1 set! <gray>(%x%, %y%, %z%)"
+zone-pos2-set: "<green>Position 2 set! <gray>(%x%, %y%, %z%)"
+zone-selection-complete: "<gradient:#00ffff:#00ff00>Both positions set! Use <yellow>/kitpvp setzone %type% <name></yellow> to create the zone.</gradient>"
+zone-wand-given: "<gradient:#00ffff:#00ff00>Zone selection wand given! Right-click to select corners.</gradient>"
+safe-zone-enter: "<green>✓ You entered a safe zone"
+safe-zone-exit: "<yellow>You left the safe zone"
+pvp-zone-enter: "<red>⚔ You entered a PvP zone!"
+pvp-zone-exit: "<green>You left the PvP zone"
+no-pvp-in-safe-zone: "<red>You cannot attack players in a safe zone!"
+
+# Kit Messages
+kit-selected: "<green>You selected the <gradient:#00ffff:#00ff00>%kit%</gradient> kit!"
+kit-created: "<green>Kit <aqua>%kit%</aqua> created successfully!"
+kit-deleted: "<red>Kit <yellow>%kit%</yellow> deleted!"
+kit-not-found: "<red>Kit not found!"
+kit-no-permission: "<red>You don't have permission to use this kit!"
+kit-price: "<gray>This kit costs <gold>$%price%"
+kit-purchased: "<green>You purchased the <aqua>%kit%</aqua> kit!"
+kit-insufficient-funds: "<red>You don't have enough money! This kit costs <gold>$%price%</gold>"
+kit-editor-enter: "<gradient:#00ffff:#00ff00>Kit Editor Mode Enabled!</gradient> <gray>Place items in your inventory to save them to the kit. Use <aqua>/kitpvp saveit %kit%</aqua> when done."
+kit-editor-exit: "<yellow>Kit Editor Mode Disabled. Changes were not saved."
+kit-saved: "<gradient:#00ffff:#00ff00>Kit <aqua>%kit%</aqua> has been saved!</gradient>"
+
+# Combat Messages
+kill-message: "<yellow>%killer%</yellow> <gray>killed</gray> <yellow>%victim%"
+death-message: "<red>You died!"
+killstreak-ended: "<yellow>%killer%</yellow> <gray>ended</gray> <yellow>%victim%'s</yellow> <gray>killstreak of</gray> <red>%streak%</red>!"
+assist-message: "<gray>You assisted in killing <yellow>%player%</yellow>!"
+
+# Stats Messages
+stats-header: "<gradient:#00ffff:#00ff00>━━━━━━━━━ %player%'s Stats ━━━━━━━━━</gradient>"
+stats-kills: "<gray>Kills: <green>%kills%"
+stats-deaths: "<gray>Deaths: <red>%deaths%"
+stats-kdr: "<gray>K/D Ratio: <yellow>%kdr%"
+stats-killstreak: "<gray>Current Streak: <gold>%streak%"
+stats-best-streak: "<gray>Best Streak: <gold>%best_streak%"
+stats-level: "<gray>Level: <aqua>%level%"
+stats-xp: "<gray>XP: <aqua>%xp%/%required_xp%"
+
+# Leaderboard Messages
+leaderboard-header: "<gradient:#00ffff:#00ff00>━━━━━━━━━ Top Players ━━━━━━━━━</gradient>"
+leaderboard-entry: "<yellow>#%position%</yellow> <gray>-</gray> <white>%player%</white> <gray>-</gray> <green>%value%"
+leaderboard-footer: "<gradient:#00ffff:#00ff00>━━━━━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
+
+# Level Messages
+level-up: "<gradient:#00ffff:#00ff00><bold>LEVEL UP!</bold></gradient> <gray>You are now level</gray> <aqua>%level%"
+xp-gained: "<green>+%xp% XP"
+xp-lost: "<red>-%xp% XP"
+
+# Ability Messages
+ability-activated: "<green>Activated <aqua>%ability%</aqua>!"
+ability-cooldown: "<red>You must wait <yellow>%time%</yellow> before using this ability again!"
+ability-no-target: "<red>No valid target found!"
+
+# Error Messages
+error-occurred: "<red>An error occurred! Please contact an administrator."
+
+# Help Messages
+help-header: "<gradient:#00ffff:#00ff00>━━━━━━━━━ KitPvP Help ━━━━━━━━━</gradient>"
+help-footer: "<gradient:#00ffff:#00ff00>━━━━━━━━━━━━━━━━━━━━━━━━━━━</gradient>"
+help-commands:
+  - "<aqua>/kitpvp</aqua> <gray>- Open main menu"
+  - "<aqua>/kits</aqua> <gray>- Select a kit"
+  - "<aqua>/stats [player]</aqua> <gray>- View statistics"
+  - "<aqua>/leaderboard</aqua> <gray>- View top players"
+  - "<aqua>/kitpvp scoreboard</aqua> <gray>- Toggle scoreboard visibility"
+help-admin-commands:
+  - "<red>/kitpvp setspawn</red> <gray>- Set arena spawn"
+  - "<red>/kitpvp setzone <safe|pvp></red> <gray>- Get zone selection wand"
+  - "<red>/kitpvp createkit <name></red> <gray>- Create kit"
+  - "<red>/kitpvp editkit <name></red> <gray>- Edit kit"
+  - "<red>/kitpvp deletekit <name></red> <gray>- Delete kit"
+  - "<red>/kitpvp reload</red> <gray>- Reload configuration"
+  - "<red>/kitpvp gui</red> <gray>- Open admin panel"
+
+# GUI Messages
+gui-kit-locked: "<red><bold>LOCKED</bold></red>"
+gui-kit-unlock-price: "<gray>Price: <gold>$%price%"
+gui-kit-unlocked: "<green><bold>UNLOCKED</bold></green>"
+gui-click-to-select: "<gradient:#00ffff:#00ff00>Click to select!</gradient>"
+gui-previous-page: "<yellow>← Previous Page"
+gui-next-page: "<yellow>Next Page →"
+gui-close: "<red>Close"
+gui-back: "<yellow>← Back"
+
+# Scoreboard Messages
+scoreboard-shown: "<green>Scoreboard is now <bold>visible</bold>!"
+scoreboard-hidden: "<yellow>Scoreboard is now <bold>hidden</bold>!"
+
+# Money Messages
+vault-not-found: "<red>Vault is not installed! Money features are disabled."
+givemoney-usage: "<red>Usage: <yellow>/givemoney <player> <amount>"
+invalid-amount: "<red>Invalid amount! Please enter a positive number."
+givemoney-success: "<green>You gave <yellow>$%amount%</yellow> to <aqua>%player%</aqua>!"
+givemoney-failed: "<red>Failed to give money! Please try again."
+money-received: "<green>You received <yellow>$%amount%</yellow>!"
+

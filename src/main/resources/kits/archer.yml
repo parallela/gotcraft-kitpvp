@@ -1,0 +1,67 @@
+name: "&c&lArcher"
+description: "&7Master of ranged combat"
+icon:
+  material: BOW
+  name: "&c&lArcher Kit"
+  lore:
+    - "&7Dominate with bow and arrows"
+    - ""
+    - "&eAbility: &eTeleport"
+    - "&7Teleport behind your target!"
+    - ""
+    - "&7Price: &a$750"
+    - "&aClick to select!"
+
+permission: "kitpvp.kit.archer"
+price: 750
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: STONE_SWORD
+    name: "<red>Archer Sword</red>"
+  - slot: 1
+    material: BOW
+    name: "<red>Archer Bow</red>"
+    enchantments:
+      - "POWER:2"
+      - "INFINITY:1"
+  - slot: 2
+    material: ARROW
+    amount: 1
+  - slot: 7
+    material: ENDER_PEARL
+    name: "<light_purple>Teleport Ability</light_purple>"
+    lore:
+      - "<gray>Right-click to teleport behind target!</gray>"
+      - "<yellow>Cooldown: 30s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 16
+
+armor:
+  helmet:
+    material: CHAINMAIL_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: CHAINMAIL_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: CHAINMAIL_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: CHAINMAIL_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+      - "FEATHER_FALLING:2"
+
+effects:
+  - "SPEED:2"
+
+abilities:
+  - "teleport"
+

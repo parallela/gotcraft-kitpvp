@@ -1,0 +1,275 @@
+# GotCraftKitPvp Configuration
+# Professional KitPvP Plugin for Paper 1.20+
+
+# General Settings
+general:
+  # Plugin prefix for messages
+  prefix: "<gradient:#00ffff:#00ff00>[KitPvP]</gradient>"
+  # Spawn players directly in arena on join (BungeeCord mode)
+  bungee-mode: false
+  # Auto-respawn delay in ticks (20 ticks = 1 second)
+  respawn-delay: 10
+  # Enable debug mode
+  debug: false
+
+# Combat Settings
+combat:
+  # Enable 1.8 combat mechanics (no attack cooldown)
+  legacy-combat: true
+  # Apply 1.05x damage multiplier to emulate 1.8 damage values
+  legacy-damage-multiplier: true
+  # Hit delay in ticks
+  hit-delay: 10
+  # Show damage indicators
+  damage-indicators: true
+  # Play hit sounds
+  hit-sounds: true
+  # Hit sound to play
+  hit-sound: "ENTITY_PLAYER_HURT"
+  # Anti-cleanup invulnerability duration (seconds)
+  anti-cleanup-duration: 5
+  # Fall damage in PvP zones
+  fall-damage: false
+  # Void teleport back to spawn
+  void-teleport: true
+  # Void Y level
+  void-level: 0
+
+# Kill Streaks
+kill-streaks:
+  enabled: true
+  # Rewards for different streak levels (use MiniMessage format)
+  rewards:
+    5:
+      enabled: true
+      broadcast: true
+      message: "<yellow>%player%</yellow> <gray>is on a</gray> <red>5 kill streak!</red>"
+      commands:
+        - "givemoney %player% 100"
+      effects:
+        - "SPEED:1:300"
+    10:
+      enabled: true
+      broadcast: true
+      message: "<yellow>%player%</yellow> <gray>is</gray> <red>UNSTOPPABLE</red> <gray>with a</gray> <red>10 kill streak!</red>"
+      commands:
+        - "givemoney %player% 250"
+      effects:
+        - "SPEED:2:300"
+        - "REGENERATION:1:300"
+    15:
+      enabled: true
+      broadcast: true
+      message: "<yellow>%player%</yellow> <gray>is</gray> <dark_red>GODLIKE</dark_red> <gray>with a</gray> <dark_red>15 kill streak!</dark_red>"
+      commands:
+        - "givemoney %player% 500"
+      effects:
+        - "SPEED:2:300"
+        - "REGENERATION:2:300"
+        - "RESISTANCE:1:300"
+
+# Leveling System
+leveling:
+  enabled: true
+  # XP per kill
+  xp-per-kill: 50
+  # XP lost on death
+  xp-per-death: 10
+  # XP required formula: base * level
+  xp-formula:
+    base: 100
+    multiplier: 1.5
+  # Rewards for leveling up (use MiniMessage format)
+  level-rewards:
+    5:
+      - "givemoney %player% 500"
+      - "tell %player% <green>Congratulations on reaching level 5! You received $500!</green>"
+    10:
+      - "givemoney %player% 1000"
+      - "tell %player% <green>Congratulations on reaching level 10! You received $1000!</green>"
+    15:
+      - "givemoney %player% 2000"
+      - "tell %player% <gold>Congratulations on reaching level 15! You received $2000!</gold>"
+    20:
+      - "givemoney %player% 5000"
+      - "tell %player% <gold>Congratulations on reaching level 20! You received $5000!</gold>"
+
+# Economy (Built-in - No Vault required!)
+economy:
+  enabled: true
+  # Starting balance for new players
+  starting-balance: 1000.0
+  # Money per kill
+  money-per-kill: 10
+  # Money lost on death
+  money-per-death: 5
+
+# Database Settings
+database:
+  # Type: SQLITE or MYSQL
+  type: "SQLITE"
+  # MySQL settings (only if type is MYSQL)
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "gotcraftkitpvp"
+    username: "root"
+    password: "password"
+    # Connection pool settings
+    pool:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+
+# Leaderboards
+leaderboards:
+  enabled: true
+  # Refresh interval in seconds
+  refresh-interval: 60
+  # Number of entries to display
+  entries: 10
+  # Enable holograms (requires DecentHolograms or similar)
+  holograms:
+    enabled: false
+    location:
+      world: "world"
+      x: 0
+      y: 100
+      z: 0
+
+# Scoreboard
+scoreboard:
+  enabled: true
+  # Update interval in ticks (20 ticks = 1 second)
+  update-interval: 20
+  # Title (use MiniMessage format)
+  title: "<gradient:#00ffff:#00ff00><bold>KITPVP</bold></gradient>"
+  # Lines (top to bottom, use %placeholder% for dynamic values)
+  # Keep lines short - max 40 characters when converted
+  lines:
+    - ""
+    - "<gray>Kit: <aqua>%kit%"
+    - ""
+    - "<gray>Kills: <green>%kills%"
+    - "<gray>Deaths: <red>%deaths%"
+    - "<gray>K/D: <yellow>%kdr%"
+    - "<gray>Streak: <gold>%streak%"
+    - ""
+    - "<gray>Level: <aqua>%level%"
+    - "<gray>Money: <gold>$%money%"
+    - ""
+    - "<aqua>play.gotcraft.dev"
+    - ""
+
+# Abilities
+abilities:
+  enabled: true
+  # Global cooldown message (use MiniMessage format)
+  cooldown-message: "<red>You must wait <yellow>%time%</yellow> before using this ability again!"
+
+# Safe Zones
+safe-zones:
+  # Heal players in safe zones
+  healing: true
+  # Healing interval in ticks
+  healing-interval: 40
+  # Healing amount (half hearts)
+  healing-amount: 1
+  # Prevent PvP
+  prevent-pvp: true
+  # Prevent damage
+  prevent-damage: true
+  # Entry message (use MiniMessage format)
+  entry-message: "<green>You entered a safe zone"
+  # Exit message (use MiniMessage format)
+  exit-message: "<red>You left the safe zone"
+
+# Arena Settings
+arena:
+  # Spawn location (set via /kitpvp setspawn)
+  spawn:
+    world: "world"
+    x: 0
+    y: 100
+    z: 0
+    yaw: 0
+    pitch: 0
+  # Clear inventory on spawn
+  clear-inventory: true
+  # Give items on spawn (before kit selection)
+  spawn-items:
+    kit-selector:
+      enabled: true
+      slot: 0
+      material: "CHEST"
+      name: "<gradient:#00ffff:#00ff00><bold>Select Kit</bold></gradient> <gray>(Right Click)"
+      lore:
+        - "<gray>Click to choose your kit!"
+    stats:
+      enabled: true
+      slot: 8
+      material: "PLAYER_HEAD"
+      name: "<gradient:#00ffff:#00ff00><bold>Your Stats</bold></gradient> <gray>(Right Click)"
+      lore:
+        - "<gray>View your statistics!"
+
+# GUI Settings
+gui:
+  # Kit selector GUI
+  kit-selector:
+    title: "<gradient:#00ffff:#00ff00><bold>Select Your Kit</bold></gradient>"
+    size: 54
+    # Fill empty slots
+    fill-empty: true
+    fill-material: "GRAY_STAINED_GLASS_PANE"
+    fill-name: " "
+  # Stats GUI
+  stats-gui:
+    title: "<gradient:#00ffff:#00ff00><bold>%player%'s Statistics</bold></gradient>"
+    size: 27
+  # Leaderboard GUI
+  leaderboard-gui:
+    title: "<gradient:#00ffff:#00ff00><bold>Top Players</bold></gradient>"
+    size: 54
+  # Admin GUI
+  admin-gui:
+    title: "<red><bold>KitPvP Admin Panel</bold></red>"
+    size: 54
+
+# Messages
+messages:
+  # Will be loaded from messages.yml
+  use-messages-file: true
+
+# Health Display (Nametag)
+health-display:
+  # Enable health display next to player names
+  enabled: true
+  # Format: hearts (shows ❤), percentage (shows %), number (shows raw health)
+  format: "hearts"
+  # Position: prefix (before name) or suffix (after name)
+  position: "suffix"
+
+# Chat Formatting
+chat:
+  custom-format:
+    # Enable custom chat formatting
+    enabled: true
+    # Chat format (supports MiniMessage formatting)
+    # Available placeholders:
+    # %player% - Player name
+    # %level% - Player level
+    # %message% - The chat message
+    # %balance% - Player balance (number)
+    # %money% - Player balance (formatted as $XXX)
+    # %kills%, %deaths%, %kdr%, %streak% - Player stats
+    # Plus any PlaceholderAPI placeholders if installed
+    format: "<dark_gray>[</dark_gray><aqua>Lv.%level%</aqua><dark_gray>]</dark_gray> <yellow>%player%</yellow><dark_gray>:</dark_gray> <white>%message%</white>"
+
+    # Alternative formats (you can swap these in):
+    # Gradient: "<dark_gray>[</dark_gray><gradient:#00ffff:#00ff00>Level %level%</gradient><dark_gray>]</dark_gray> <yellow>%player%</yellow><dark_gray>:</dark_gray> <white>%message%</white>"
+    # Minimal: "<gray>[%level%]</gray> <yellow>%player%</yellow> <dark_gray>»</dark_gray> <white>%message%</white>"
+    # Rich: "<gradient:#gold:#yellow>[Lv.%level%]</gradient> <hover:show_text:'<aqua>Kills: %kills%\nDeaths: %deaths%\nK/D: %kdr%'><yellow>%player%</yellow></hover> <dark_gray>→</dark_gray> <white>%message%</white>"
+    # Money: "<dark_gray>[</dark_gray><gold>$%balance%</gold><dark_gray>]</dark_gray> <dark_gray>[</dark_gray><aqua>Lv.%level%</aqua><dark_gray>]</dark_gray> <yellow>%player%</yellow><gray>:</gray> <white>%message%</white>"
+    # Fancy: "<gradient:#ff0000:#ff7700:#ffff00:#00ff00:#0000ff:#ff00ff>[Level %level%]</gradient> <rainbow>%player%</rainbow> <dark_gray>»</dark_gray> <white>%message%</white>"
+

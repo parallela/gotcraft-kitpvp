@@ -1,0 +1,30 @@
+# Zones Configuration
+# Zones are defined by two corners (min and max)
+
+zones:
+  # Example safe zone
+  # spawn_safe:
+  #   type: SAFE
+  #   world: world
+  #   min:
+  #     x: -50
+  #     y: 60
+  #     z: -50
+  #   max:
+  #     x: 50
+  #     y: 120
+  #     z: 50
+
+  # Example PvP zone
+  # arena_pvp:
+  #   type: PVP
+  #   world: world
+  #   min:
+  #     x: -100
+  #     y: 60
+  #     z: -100
+  #   max:
+  #     x: 100
+  #     y: 120
+  #     z: 100
+

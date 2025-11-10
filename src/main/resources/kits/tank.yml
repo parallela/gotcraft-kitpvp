@@ -1,0 +1,59 @@
+name: "<dark_red><bold>Tank</bold></dark_red>"
+description: "<gray>Heavy armor and high defense</gray>"
+icon:
+  material: DIAMOND_CHESTPLATE
+  name: "<dark_red><bold>Tank Kit</bold></dark_red>"
+  lore:
+    - "<gray>Heavy armor with high resistance</gray>"
+    - ""
+    - "<yellow>Ability: <red>Strength</red></yellow>"
+    - "<gray>Gain temporary strength!</gray>"
+    - ""
+    - "<gray>Price: <green>$1000</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.tank"
+price: 1000
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: STONE_SWORD
+    name: "<dark_red>Tank Sword</dark_red>"
+    enchantments:
+      - "SHARPNESS:1"
+  - slot: 7
+    material: BLAZE_POWDER
+    name: "<red>Strength Ability</red>"
+    lore:
+      - "<gray>Right-click for temporary strength!</gray>"
+      - "<yellow>Cooldown: 35s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 32
+
+armor:
+  helmet:
+    material: DIAMOND_HELMET
+    enchantments:
+      - "PROTECTION:2"
+  chestplate:
+    material: DIAMOND_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+  leggings:
+    material: DIAMOND_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+  boots:
+    material: DIAMOND_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+
+effects:
+  - "RESISTANCE:1"
+
+abilities:
+  - "strength"
+

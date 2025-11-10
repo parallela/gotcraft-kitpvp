@@ -1,0 +1,41 @@
+# Default Kit - Given to new players with no kits or money
+name: "<gray>Default Kit"
+description: "Basic starter kit for new players"
+permission: ""
+price: 0
+free: true
+cooldown: 0
+
+icon:
+  material: WOODEN_SWORD
+  name: "<gray>Default Kit"
+  lore:
+    - "<gray>A basic starter kit"
+    - "<gray>Free for everyone!"
+
+items:
+  - slot: 0
+    material: WOODEN_SWORD
+    amount: 1
+    name: "<gray>Wooden Sword"
+  - slot: 1
+    material: BOW
+    amount: 1
+    name: "<gray>Bow"
+  - slot: 8
+    material: ARROW
+    amount: 64
+
+armor:
+  helmet:
+    material: LEATHER_HELMET
+  chestplate:
+    material: LEATHER_CHESTPLATE
+  leggings:
+    material: LEATHER_LEGGINGS
+  boots:
+    material: LEATHER_BOOTS
+
+effects: []
+abilities: []
+

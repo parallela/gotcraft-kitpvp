@@ -1,0 +1,77 @@
+# Example Kit Configuration
+# This is an example - actual kits will be created in the kits/ folder
+
+name: "<gold><bold>Warrior</bold></gold>"
+description: "<gray>A balanced kit for combat</gray>"
+icon:
+  material: IRON_SWORD
+  name: "<gold><bold>Warrior Kit</bold></gold>"
+  lore:
+    - "<gray>A balanced kit with sword and armor</gray>"
+    - ""
+    - "<yellow>Ability: <green>Dash</green></yellow>"
+    - "<gray>Launch yourself forward!</gray>"
+    - ""
+    - "<gray>Price: <green>$500</green></gray>"
+    - "<green>Click to select!</green>"
+
+# Permission required to use this kit
+permission: "kitpvp.kit.warrior"
+
+# Economy
+price: 500
+free: false
+
+# Cooldown between uses (seconds)
+cooldown: 0
+
+# Items
+items:
+  - slot: 0
+    material: IRON_SWORD
+    name: "<gold>Warrior Sword</gold>"
+    enchantments:
+      - "SHARPNESS:1"
+  - slot: 1
+    material: BOW
+    name: "<gold>Warrior Bow</gold>"
+  - slot: 2
+    material: ARROW
+    amount: 16
+  - slot: 7
+    material: FEATHER
+    name: "<green>Dash Ability</green>"
+    lore:
+      - "<gray>Right-click to dash forward!</gray>"
+      - "<yellow>Cooldown: 10s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 16
+
+# Armor
+armor:
+  helmet:
+    material: IRON_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: IRON_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: IRON_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: IRON_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+
+# Potion Effects (permanent while kit is active)
+effects:
+  - "SPEED:1"
+
+# Abilities
+abilities:
+  - "dash"
+

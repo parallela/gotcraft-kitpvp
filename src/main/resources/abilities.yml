@@ -1,0 +1,61 @@
+# Abilities Configuration
+# Define custom abilities with cooldowns and effects
+
+abilities:
+  dash:
+    name: "<yellow>Dash</yellow>"
+    description: "<gray>Launch yourself forward!</gray>"
+    cooldown: 10
+    power: 2.0
+    permission: "kitpvp.ability.dash"
+
+  heal:
+    name: "<green>Heal</green>"
+    description: "<gray>Restore health!</gray>"
+    cooldown: 30
+    amount: 4.0
+    permission: "kitpvp.ability.heal"
+
+  fireball:
+    name: "<red>Fireball</red>"
+    description: "<gray>Launch a fireball!</gray>"
+    cooldown: 15
+    permission: "kitpvp.ability.fireball"
+
+  freeze:
+    name: "<aqua>Freeze</aqua>"
+    description: "<gray>Freeze nearby enemies!</gray>"
+    cooldown: 25
+    radius: 5.0
+    duration: 5
+    permission: "kitpvp.ability.freeze"
+
+  lightning:
+    name: "<yellow>Lightning Strike</yellow>"
+    description: "<gray>Strike your target with lightning!</gray>"
+    cooldown: 20
+    damage: 5.0
+    permission: "kitpvp.ability.lightning"
+
+  teleport:
+    name: "<light_purple>Teleport</light_purple>"
+    description: "<gray>Teleport behind your target!</gray>"
+    cooldown: 30
+    range: 10.0
+    permission: "kitpvp.ability.teleport"
+
+  invisibility:
+    name: "<gray>Invisibility</gray>"
+    description: "<gray>Become invisible for a short time!</gray>"
+    cooldown: 45
+    duration: 5
+    permission: "kitpvp.ability.invisibility"
+
+  strength:
+    name: "<red>Strength</red>"
+    description: "<gray>Gain temporary strength!</gray>"
+    cooldown: 35
+    duration: 10
+    amplifier: 1
+    permission: "kitpvp.ability.strength"
+
