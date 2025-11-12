@@ -216,7 +216,9 @@ public class Kit {
     private KitItem itemStackToKitItem(ItemStack item, int slot) {
         List<String> enchantments = new ArrayList<>();
         for (Map.Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet()) {
-            enchantments.add(entry.getKey().getName() + ":" + entry.getValue());
+            // Use the modern key instead of deprecated getName()
+            String enchantKey = entry.getKey().getKey().getKey().toUpperCase();
+            enchantments.add(enchantKey + ":" + entry.getValue());
         }
 
         String name = null;
@@ -399,12 +401,24 @@ public class Kit {
             // Add enchantments
             if (enchantments != null) {
                 for (String enchantmentString : enchantments) {
-                    String[] parts = enchantmentString.split(":");
-                    Enchantment enchantment = Enchantment.getByName(parts[0]);
-                    int level = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
+                    try {
+                        String[] parts = enchantmentString.split(":");
+                        String enchantKey = parts[0].toLowerCase();
+                        int level = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
 
-                    if (enchantment != null) {
-                        item.addUnsafeEnchantment(enchantment, level);
+                        // Try modern key first (e.g., "sharpness", "protection")
+                        Enchantment enchantment = Enchantment.getByKey(org.bukkit.NamespacedKey.minecraft(enchantKey));
+
+                        // Fallback to deprecated getName() for backwards compatibility
+                        if (enchantment == null) {
+                            enchantment = Enchantment.getByName(parts[0]);
+                        }
+
+                        if (enchantment != null) {
+                            item.addUnsafeEnchantment(enchantment, level);
+                        }
+                    } catch (Exception e) {
+                        // Skip invalid enchantment
                     }
                 }
             }

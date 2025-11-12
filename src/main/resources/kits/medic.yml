@@ -1,0 +1,63 @@
+name: "<green><bold>Medic</bold></green>"
+description: "<gray>Support healer with regeneration</gray>"
+icon:
+  material: GOLDEN_APPLE
+  name: "<green><bold>Medic Kit</bold></green>"
+  lore:
+    - "<gray>Keep yourself and allies alive</gray>"
+    - ""
+    - "<yellow>Ability: <green>Heal</green></yellow>"
+    - "<gray>Rapid health recovery!</gray>"
+    - ""
+    - "<gray>Price: <green>$700</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.medic"
+price: 700
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: STONE_SWORD
+    name: "<green>Medic's Blade</green>"
+    enchantments:
+      - "SHARPNESS:1"
+  - slot: 1
+    material: SPLASH_POTION
+    name: "<green>Healing Potion</green>"
+    amount: 3
+  - slot: 7
+    material: GOLDEN_APPLE
+    name: "<green>Heal Ability</green>"
+    lore:
+      - "<gray>Right-click to restore health!</gray>"
+      - "<yellow>Cooldown: 30s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 32
+
+armor:
+  helmet:
+    material: GOLDEN_HELMET
+    enchantments:
+      - "PROTECTION:2"
+  chestplate:
+    material: GOLDEN_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+  leggings:
+    material: GOLDEN_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+  boots:
+    material: GOLDEN_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+
+effects:
+  - "REGENERATION:1"
+
+abilities:
+  - "heal"
+

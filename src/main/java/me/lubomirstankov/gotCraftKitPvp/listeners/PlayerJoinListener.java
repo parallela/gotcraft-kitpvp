@@ -43,19 +43,18 @@ public class PlayerJoinListener implements Listener {
             }
         }
 
-        // Teleport to spawn if bungee mode
-        if (plugin.getConfigManager().isBungeeMode()) {
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                plugin.getZoneManager().teleportToSpawn(player);
+        // Always teleport to spawn on join (delayed to allow world to load)
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            plugin.getZoneManager().teleportToSpawn(player);
+
+            // Give spawn items if bungee mode
+            if (plugin.getConfigManager().isBungeeMode()) {
                 giveSpawnItems(player);
-                giveDefaultKitIfNeeded(player);
-            }, 5L);
-        } else {
-            // Give default kit if needed (delayed to allow database to load)
-            plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                giveDefaultKitIfNeeded(player);
-            }, 20L); // Wait 1 second for database
-        }
+            }
+
+            // Give default kit if needed
+            giveDefaultKitIfNeeded(player);
+        }, 5L);
     }
 
     private void giveDefaultKitIfNeeded(Player player) {

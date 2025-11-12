@@ -19,6 +19,8 @@ public class ScoreboardManager {
     private final Map<UUID, Scoreboard> playerScoreboards = new HashMap<>();
     private final Map<UUID, ProtocolScoreboard> protocolScoreboards = new HashMap<>();
     private final Map<UUID, Boolean> hiddenScoreboards = new HashMap<>();
+    private final Map<UUID, Map<Integer, String>> playerLines = new HashMap<>();
+    private final Map<UUID, String> playerTitles = new HashMap<>();
     private final boolean useProtocolLib;
     private int titleIndex = 0;
     private int taskId;
@@ -74,6 +76,7 @@ public class ScoreboardManager {
 
             player.setScoreboard(scoreboard);
             playerScoreboards.put(player.getUniqueId(), scoreboard);
+            playerTitles.put(player.getUniqueId(), getTitle());
             plugin.getLogger().info("Created scoreboard for player " + player.getName());
         }
     }
@@ -88,13 +91,15 @@ public class ScoreboardManager {
             formattedLines.add(formatLine(player, stats, line));
         }
 
+        String title = getTitle();
+
         if (useProtocolLib) {
             ProtocolScoreboard protocolBoard = protocolScoreboards.get(player.getUniqueId());
             if (protocolBoard == null) {
                 createScoreboard(player);
                 return;
             }
-            protocolBoard.updateTitle(getTitle());
+            protocolBoard.updateTitle(title);
             protocolBoard.updateLines(formattedLines);
         } else {
             Scoreboard scoreboard = playerScoreboards.get(player.getUniqueId());
@@ -106,46 +111,106 @@ public class ScoreboardManager {
             Objective objective = scoreboard.getObjective("kitpvp");
             if (objective == null) return;
 
-            objective.setDisplayName(getTitle());
+            UUID uuid = player.getUniqueId();
 
-            for (Team team : scoreboard.getTeams()) {
-                team.unregister();
+            // Update title only if changed
+            String oldTitle = playerTitles.get(uuid);
+            if (!title.equals(oldTitle)) {
+                objective.setDisplayName(title);
+                playerTitles.put(uuid, title);
             }
-            for (String entry : scoreboard.getEntries()) {
-                scoreboard.resetScores(entry);
-            }
 
-            int score = formattedLines.size();
-            for (int i = 0; i < formattedLines.size(); i++) {
-                String formatted = formattedLines.get(i);
+            // Get previous lines
+            Map<Integer, String> previousLines = playerLines.computeIfAbsent(uuid, k -> new HashMap<>());
 
-                // Create unique invisible entry using spaces with different lengths
-                // This completely hides the numbers by using blank entries
-                String entry = " ".repeat(i + 1);
+            // Check if we need to recreate (line count changed)
+            boolean needsRecreate = previousLines.size() != formattedLines.size();
 
-                Team team = scoreboard.registerNewTeam("line_" + i);
-
-                // CRITICAL: Set option to hide the entry name completely
-                team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-
-                team.addEntry(entry);
-
-                if (formatted.length() <= 64) {
-                    team.setPrefix(formatted);
-                } else {
-                    team.setPrefix(formatted.substring(0, 64));
-                    if (formatted.length() > 64) {
-                        String suffix = formatted.substring(64);
-                        if (suffix.length() > 64) {
-                            suffix = suffix.substring(0, 64);
-                        }
-                        team.setSuffix(suffix);
-                    }
-                }
-
-                objective.getScore(entry).setScore(score--);
+            if (needsRecreate) {
+                // Full recreate when line count changes
+                recreateStandardScoreboard(scoreboard, objective, formattedLines, uuid);
+            } else {
+                // Smart update - only change what's different
+                updateStandardScoreboardLines(scoreboard, formattedLines, previousLines, uuid);
             }
         }
+    }
+
+    private void updateStandardScoreboardLines(Scoreboard scoreboard, List<String> newLines, Map<Integer, String> previousLines, UUID uuid) {
+        // Update only lines that have changed
+        for (int i = 0; i < newLines.size(); i++) {
+            String newLine = newLines.get(i);
+            String oldLine = previousLines.get(i);
+
+            if (newLine.equals(oldLine)) {
+                continue; // Skip unchanged lines
+            }
+
+            Team team = scoreboard.getTeam("line_" + i);
+            if (team == null) {
+                // Team doesn't exist, recreate all
+                recreateStandardScoreboard(scoreboard, scoreboard.getObjective("kitpvp"), newLines, uuid);
+                return;
+            }
+
+            // Update the team's prefix/suffix
+            if (newLine.length() <= 64) {
+                team.setPrefix(newLine);
+                team.setSuffix(""); // Clear suffix
+            } else {
+                team.setPrefix(newLine.substring(0, 64));
+                String suffix = newLine.substring(64);
+                if (suffix.length() > 64) {
+                    suffix = suffix.substring(0, 64);
+                }
+                team.setSuffix(suffix);
+            }
+
+            previousLines.put(i, newLine);
+        }
+    }
+
+    private void recreateStandardScoreboard(Scoreboard scoreboard, Objective objective, List<String> formattedLines, UUID uuid) {
+        // Clear existing teams and entries
+        for (Team team : scoreboard.getTeams()) {
+            team.unregister();
+        }
+        for (String entry : scoreboard.getEntries()) {
+            scoreboard.resetScores(entry);
+        }
+
+        Map<Integer, String> lineMap = new HashMap<>();
+
+        int score = formattedLines.size();
+        for (int i = 0; i < formattedLines.size(); i++) {
+            String formatted = formattedLines.get(i);
+
+            // Create unique invisible entry using spaces with different lengths
+            String entry = " ".repeat(i + 1);
+
+            Team team = scoreboard.registerNewTeam("line_" + i);
+
+            // CRITICAL: Set option to hide the entry name completely
+            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+
+            team.addEntry(entry);
+
+            if (formatted.length() <= 64) {
+                team.setPrefix(formatted);
+            } else {
+                team.setPrefix(formatted.substring(0, 64));
+                String suffix = formatted.substring(64);
+                if (suffix.length() > 64) {
+                    suffix = suffix.substring(0, 64);
+                }
+                team.setSuffix(suffix);
+            }
+
+            objective.getScore(entry).setScore(score--);
+            lineMap.put(i, formatted);
+        }
+
+        playerLines.put(uuid, lineMap);
     }
 
     private String getTitle() {
@@ -196,6 +261,7 @@ public class ScoreboardManager {
             try {
                 formatted = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, formatted);
             } catch (Exception e) {
+                // PlaceholderAPI not available or error
             }
         }
 
@@ -204,15 +270,21 @@ public class ScoreboardManager {
     }
 
     public void removeScoreboard(Player player) {
+        UUID uuid = player.getUniqueId();
+
         if (useProtocolLib) {
-            ProtocolScoreboard protocolBoard = protocolScoreboards.remove(player.getUniqueId());
+            ProtocolScoreboard protocolBoard = protocolScoreboards.remove(uuid);
             if (protocolBoard != null) {
                 protocolBoard.destroy();
             }
         } else {
-            playerScoreboards.remove(player.getUniqueId());
+            playerScoreboards.remove(uuid);
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         }
+
+        // Clean up tracking maps
+        playerLines.remove(uuid);
+        playerTitles.remove(uuid);
     }
 
     /**
@@ -275,6 +347,8 @@ public class ScoreboardManager {
         }
 
         playerScoreboards.clear();
+        playerLines.clear();
+        playerTitles.clear();
     }
 }
 

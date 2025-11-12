@@ -18,6 +18,9 @@ public class PlayerQuitListener implements Listener {
         // Save stats
         plugin.getStatsManager().savePlayerStats(event.getPlayer());
 
+        // Save money balance (IMPORTANT!)
+        plugin.getEconomyManager().savePlayerBalance(event.getPlayer());
+
         // Remove scoreboard
         plugin.getScoreboardManager().removeScoreboard(event.getPlayer());
 

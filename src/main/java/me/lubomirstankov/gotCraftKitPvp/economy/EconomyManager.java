@@ -135,6 +135,29 @@ public class EconomyManager {
     }
 
     /**
+     * Save a player's current balance (used when player quits)
+     */
+    public void savePlayerBalance(Player player) {
+        UUID uuid = player.getUniqueId();
+        Double balance = balances.get(uuid);
+        if (balance != null) {
+            saveBalanceAsync(uuid, balance);
+            plugin.getLogger().info("Saved balance for " + player.getName() + ": $" + balance);
+        }
+    }
+
+    /**
+     * Save a player's current balance (used when player quits)
+     */
+    public void savePlayerBalance(UUID uuid) {
+        Double balance = balances.get(uuid);
+        if (balance != null) {
+            saveBalanceAsync(uuid, balance);
+            plugin.getLogger().info("Saved balance for " + uuid + ": $" + balance);
+        }
+    }
+
+    /**
      * Save all balances to database
      */
     public void saveAll() {

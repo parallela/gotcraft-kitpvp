@@ -50,6 +50,9 @@ public final class GotCraftKitPvp extends JavaPlugin {
         long startTime = System.currentTimeMillis();
         getLogger().info("Enabling GotCraftKitPvp...");
 
+        // Register BungeeCord messaging channel for hub command
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         // Initialize managers
         try {
             initializeManagers();
@@ -150,6 +153,9 @@ public final class GotCraftKitPvp extends JavaPlugin {
         getCommand("givemoney").setExecutor(giveMoneyCommand);
         getCommand("givemoney").setTabCompleter(giveMoneyCommand);
 
+        // Register hub/leave command
+        getCommand("hub").setExecutor(new HubCommand(this));
+
         getLogger().info("Commands registered!");
     }
 
@@ -165,6 +171,7 @@ public final class GotCraftKitPvp extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ZoneListener(this), this);
         getServer().getPluginManager().registerEvents(new GUIListener(this), this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        getServer().getPluginManager().registerEvents(new BlockProtectionListener(this), this);
 
         healthTagListener = new HealthTagListener(this);
         getServer().getPluginManager().registerEvents(healthTagListener, this);

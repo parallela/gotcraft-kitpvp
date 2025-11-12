@@ -1,0 +1,64 @@
+name: "<yellow><bold>Storm Knight</bold></yellow>"
+description: "<gray>Command the power of lightning</gray>"
+icon:
+  material: TRIDENT
+  name: "<yellow><bold>Storm Knight Kit</bold></yellow>"
+  lore:
+    - "<gray>Strike enemies with lightning!</gray>"
+    - ""
+    - "<yellow>Ability: <yellow>Lightning Strike</yellow></yellow>"
+    - "<gray>Call down lightning on your foes!</gray>"
+    - ""
+    - "<gray>Price: <green>$1200</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.stormknight"
+price: 1200
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_SWORD
+    name: "<yellow>Storm Blade</yellow>"
+    enchantments:
+      - "SHARPNESS:2"
+  - slot: 1
+    material: TRIDENT
+    name: "<yellow>Lightning Trident</yellow>"
+    enchantments:
+      - "LOYALTY:2"
+  - slot: 7
+    material: END_ROD
+    name: "<yellow>Lightning Strike Ability</yellow>"
+    lore:
+      - "<gray>Right-click to strike with lightning!</gray>"
+      - "<yellow>Cooldown: 20s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 20
+
+armor:
+  helmet:
+    material: IRON_HELMET
+    enchantments:
+      - "PROTECTION:2"
+  chestplate:
+    material: IRON_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+      - "THORNS:1"
+  leggings:
+    material: IRON_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+  boots:
+    material: IRON_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+
+effects: []
+
+abilities:
+  - "lightning"
+

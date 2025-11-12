@@ -1,0 +1,65 @@
+name: "<gray><bold>Assassin</bold></gray>"
+description: "<gray>Strike from the shadows</gray>"
+icon:
+  material: IRON_SWORD
+  name: "<gray><bold>Assassin Kit</bold></gray>"
+  lore:
+    - "<gray>Become invisible and strike!</gray>"
+    - ""
+    - "<yellow>Ability: <gray>Invisibility</gray></yellow>"
+    - "<gray>Vanish from sight!</gray>"
+    - ""
+    - "<gray>Price: <green>$1300</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.assassin"
+price: 1300
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_SWORD
+    name: "<gray>Shadow Blade</gray>"
+    enchantments:
+      - "SHARPNESS:3"
+  - slot: 1
+    material: DIAMOND_AXE
+    name: "<gray>Assassin's Axe</gray>"
+    enchantments:
+      - "SHARPNESS:2"
+  - slot: 7
+    material: PHANTOM_MEMBRANE
+    name: "<gray>Invisibility Ability</gray>"
+    lore:
+      - "<gray>Right-click to become invisible!</gray>"
+      - "<yellow>Cooldown: 45s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 16
+
+armor:
+  helmet:
+    material: LEATHER_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: LEATHER_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: LEATHER_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: LEATHER_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+      - "FEATHER_FALLING:3"
+
+effects:
+  - "SPEED:3"
+
+abilities:
+  - "invisibility"
+

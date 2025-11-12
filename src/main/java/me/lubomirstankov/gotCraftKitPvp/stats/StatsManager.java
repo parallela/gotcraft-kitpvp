@@ -35,10 +35,27 @@ public class StatsManager {
 
     public void saveAllStats() {
         plugin.getLogger().info("Saving all player stats...");
+
+        // Collect all save futures
+        java.util.List<java.util.concurrent.CompletableFuture<Void>> saveFutures = new java.util.ArrayList<>();
         for (PlayerStats stats : statsCache.values()) {
-            plugin.getDatabaseManager().savePlayerStats(stats);
+            saveFutures.add(plugin.getDatabaseManager().savePlayerStats(stats));
         }
-        plugin.getLogger().info("All stats saved!");
+
+        // Wait for all saves to complete
+        if (!saveFutures.isEmpty()) {
+            try {
+                java.util.concurrent.CompletableFuture.allOf(saveFutures.toArray(new java.util.concurrent.CompletableFuture[0]))
+                        .get(10, java.util.concurrent.TimeUnit.SECONDS); // 10 second timeout
+                plugin.getLogger().info("All stats saved successfully!");
+            } catch (java.util.concurrent.TimeoutException e) {
+                plugin.getLogger().warning("Timed out waiting for stats to save!");
+            } catch (Exception e) {
+                plugin.getLogger().log(java.util.logging.Level.SEVERE, "Error saving stats!", e);
+            }
+        } else {
+            plugin.getLogger().info("No stats to save.");
+        }
     }
 
     public PlayerStats getStats(Player player) {

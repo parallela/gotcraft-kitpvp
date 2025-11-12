@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
  * Simple scoreboard implementation that uses teams to hide numbers
- * No ProtocolLib packet manipulation needed - teams handle it perfectly
+ * Optimized to prevent flickering by only updating changed content
  */
 public class ProtocolScoreboard {
 
@@ -19,6 +19,8 @@ public class ProtocolScoreboard {
     private Scoreboard scoreboard;
     private Objective objective;
     private boolean created = false;
+    private final Map<Integer, String> currentLines = new HashMap<>();
+    private String currentTitle = "";
 
     public ProtocolScoreboard(GotCraftKitPvp plugin, Player player) {
         this.plugin = plugin;
@@ -38,6 +40,7 @@ public class ProtocolScoreboard {
 
             // Parse the title with colors (MiniMessage or legacy)
             String parsedTitle = parseTitle(title);
+            currentTitle = parsedTitle;
 
             objective = scoreboard.registerNewObjective("kitpvp", Criteria.DUMMY, parsedTitle);
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -48,7 +51,6 @@ public class ProtocolScoreboard {
             plugin.getLogger().info("Successfully created scoreboard for " + player.getName());
         } catch (Exception e) {
             plugin.getLogger().severe("Failed to create scoreboard: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 
@@ -60,7 +62,12 @@ public class ProtocolScoreboard {
         try {
             // Parse the title with colors
             String parsedTitle = parseTitle(title);
-            objective.setDisplayName(parsedTitle);
+
+            // Only update if title actually changed
+            if (!parsedTitle.equals(currentTitle)) {
+                objective.setDisplayName(parsedTitle);
+                currentTitle = parsedTitle;
+            }
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to update scoreboard title: " + e.getMessage());
         }
@@ -93,53 +100,113 @@ public class ProtocolScoreboard {
         }
 
         try {
-            // Clear existing entries and teams
-            for (String entry : new HashSet<>(scoreboard.getEntries())) {
-                scoreboard.resetScores(entry);
-            }
+            // If line count changed, we need to recreate
+            boolean needsRecreate = currentLines.size() != lines.size();
 
-            for (Team team : new HashSet<>(scoreboard.getTeams())) {
-                team.unregister();
-            }
-
-            // Add new lines with scores (higher score = higher on board)
-            int score = lines.size();
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-
-                // Create unique invisible entry using spaces with different lengths
-                // This completely hides the numbers by using blank entries
-                String entry = " ".repeat(i + 1);
-
-                // Create team to hold the text
-                Team team = scoreboard.registerNewTeam("line_" + i);
-
-                // CRITICAL: Set option to hide the entry name completely
-                team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
-
-                // Set the prefix (visible text)
-                if (line.length() <= 64) {
-                    team.setPrefix(line);
-                } else {
-                    team.setPrefix(line.substring(0, 64));
-                    if (line.length() > 64) {
-                        String suffix = line.substring(64);
-                        if (suffix.length() > 64) {
-                            suffix = suffix.substring(0, 64);
-                        }
-                        team.setSuffix(suffix);
+            if (!needsRecreate) {
+                // Check if any lines actually changed
+                for (int i = 0; i < lines.size(); i++) {
+                    String newLine = lines.get(i);
+                    String oldLine = currentLines.get(i);
+                    if (oldLine == null || !newLine.equals(oldLine)) {
+                        // At least one line changed, we can update
+                        break;
                     }
                 }
-
-                // Add entry to team
-                team.addEntry(entry);
-
-                // Set the score (determines position on board)
-                objective.getScore(entry).setScore(score--);
             }
+
+            if (needsRecreate || currentLines.isEmpty()) {
+                // Full recreate when line count changes or first time
+                recreateLines(lines);
+            } else {
+                // Smart update - only change what's different
+                updateExistingLines(lines);
+            }
+
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to update scoreboard lines: " + e.getMessage());
-            e.printStackTrace();
+        }
+    }
+
+    private void updateExistingLines(List<String> lines) {
+        // Update only lines that have changed
+        for (int i = 0; i < lines.size(); i++) {
+            String newLine = lines.get(i);
+            String oldLine = currentLines.get(i);
+
+            if (newLine.equals(oldLine)) {
+                continue; // Skip unchanged lines
+            }
+
+            Team team = scoreboard.getTeam("line_" + i);
+            if (team == null) {
+                // Team doesn't exist, recreate all
+                recreateLines(lines);
+                return;
+            }
+
+            // Update the team's prefix/suffix
+            if (newLine.length() <= 64) {
+                team.setPrefix(newLine);
+                team.setSuffix(""); // Clear suffix
+            } else {
+                team.setPrefix(newLine.substring(0, 64));
+                String suffix = newLine.substring(64);
+                if (suffix.length() > 64) {
+                    suffix = suffix.substring(0, 64);
+                }
+                team.setSuffix(suffix);
+            }
+
+            currentLines.put(i, newLine);
+        }
+    }
+
+    private void recreateLines(List<String> lines) {
+        // Clear existing entries and teams
+        for (String entry : new HashSet<>(scoreboard.getEntries())) {
+            scoreboard.resetScores(entry);
+        }
+
+        for (Team team : new HashSet<>(scoreboard.getTeams())) {
+            team.unregister();
+        }
+
+        currentLines.clear();
+
+        // Add new lines with scores (higher score = higher on board)
+        int score = lines.size();
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+
+            // Create unique invisible entry using spaces with different lengths
+            String entry = " ".repeat(i + 1);
+
+            // Create team to hold the text
+            Team team = scoreboard.registerNewTeam("line_" + i);
+
+            // CRITICAL: Set option to hide the entry name completely
+            team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+
+            // Set the prefix (visible text)
+            if (line.length() <= 64) {
+                team.setPrefix(line);
+            } else {
+                team.setPrefix(line.substring(0, 64));
+                String suffix = line.substring(64);
+                if (suffix.length() > 64) {
+                    suffix = suffix.substring(0, 64);
+                }
+                team.setSuffix(suffix);
+            }
+
+            // Add entry to team
+            team.addEntry(entry);
+
+            // Set the score (determines position on board)
+            objective.getScore(entry).setScore(score--);
+
+            currentLines.put(i, line);
         }
     }
 
@@ -151,6 +218,7 @@ public class ProtocolScoreboard {
         try {
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             created = false;
+            currentLines.clear();
         } catch (Exception e) {
             plugin.getLogger().warning("Failed to destroy scoreboard: " + e.getMessage());
         }

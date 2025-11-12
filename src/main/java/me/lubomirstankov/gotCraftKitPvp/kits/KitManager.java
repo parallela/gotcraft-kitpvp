@@ -62,8 +62,9 @@ public class KitManager {
     }
 
     public void giveKit(Player player, Kit kit) {
-        // Clear inventory
+        // Clear inventory and armor
         player.getInventory().clear();
+        player.getInventory().setArmorContents(null);
 
         // Remove active potion effects
         for (PotionEffect effect : player.getActivePotionEffects()) {
@@ -82,11 +83,11 @@ public class KitManager {
             }
         }
 
-        // Give armor
-        player.getInventory().setArmorContents(kit.getArmorContents());
-
-        // Give items
+        // Give items first (main inventory slots 0-35)
         player.getInventory().setContents(kit.getInventoryContents());
+
+        // Give armor AFTER items to ensure it's not overwritten
+        player.getInventory().setArmorContents(kit.getArmorContents());
 
         // Apply potion effects
         for (String effectString : kit.getEffects()) {

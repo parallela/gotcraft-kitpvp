@@ -1,0 +1,71 @@
+name: "<dark_red><bold>Demon</bold></dark_red>"
+description: "<gray>Hellfire and brimstone</gray>"
+icon:
+  material: NETHERITE_SWORD
+  name: "<dark_red><bold>Demon Kit</bold></dark_red>"
+  lore:
+    - "<gray>Wield the power of the Nether!</gray>"
+    - ""
+    - "<yellow>Abilities: <red>Fireball</red> & <red>Strength</red></yellow>"
+    - "<gray>Fire and raw power combined!</gray>"
+    - ""
+    - "<gray>Price: <green>$2000</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.demon"
+price: 2000
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: NETHERITE_SWORD
+    name: "<dark_red>Demon Blade</dark_red>"
+    enchantments:
+      - "SHARPNESS:3"
+      - "FIRE_ASPECT:2"
+  - slot: 7
+    material: FIRE_CHARGE
+    name: "<red>Fireball Ability</red>"
+    lore:
+      - "<gray>Right-click to launch a fireball!</gray>"
+      - "<yellow>Cooldown: 15s</yellow>"
+  - slot: 6
+    material: BLAZE_POWDER
+    name: "<red>Strength Ability</red>"
+    lore:
+      - "<gray>Right-click for strength boost!</gray>"
+      - "<yellow>Cooldown: 35s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 24
+
+armor:
+  helmet:
+    material: NETHERITE_HELMET
+    enchantments:
+      - "PROTECTION:2"
+      - "FIRE_PROTECTION:2"
+  chestplate:
+    material: NETHERITE_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+      - "FIRE_PROTECTION:2"
+  leggings:
+    material: NETHERITE_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+      - "FIRE_PROTECTION:2"
+  boots:
+    material: NETHERITE_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+      - "FIRE_PROTECTION:2"
+
+effects:
+  - "FIRE_RESISTANCE:1"
+
+abilities:
+  - "fireball"
+  - "strength"
+

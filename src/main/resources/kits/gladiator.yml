@@ -1,0 +1,71 @@
+name: "<gold><bold>Gladiator</bold></gold>"
+description: "<gray>Arena champion with raw power</gray>"
+icon:
+  material: TRIDENT
+  name: "<gold><bold>Gladiator Kit</bold></gold>"
+  lore:
+    - "<gray>Dominate the arena with strength!</gray>"
+    - ""
+    - "<yellow>Abilities: <red>Strength</red> & <yellow>Lightning</yellow></yellow>"
+    - "<gray>Overwhelming power!</gray>"
+    - ""
+    - "<gray>Price: <green>$1700</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.gladiator"
+price: 1700
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: NETHERITE_SWORD
+    name: "<gold>Gladiator's Sword</gold>"
+    enchantments:
+      - "SHARPNESS:3"
+  - slot: 1
+    material: TRIDENT
+    name: "<gold>Battle Trident</gold>"
+    enchantments:
+      - "IMPALING:2"
+  - slot: 7
+    material: BLAZE_POWDER
+    name: "<red>Strength Ability</red>"
+    lore:
+      - "<gray>Right-click for strength boost!</gray>"
+      - "<yellow>Cooldown: 35s</yellow>"
+  - slot: 6
+    material: END_ROD
+    name: "<yellow>Lightning Strike Ability</yellow>"
+    lore:
+      - "<gray>Right-click to strike with lightning!</gray>"
+      - "<yellow>Cooldown: 20s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 24
+
+armor:
+  helmet:
+    material: NETHERITE_HELMET
+    enchantments:
+      - "PROTECTION:3"
+  chestplate:
+    material: NETHERITE_CHESTPLATE
+    enchantments:
+      - "PROTECTION:3"
+  leggings:
+    material: NETHERITE_LEGGINGS
+    enchantments:
+      - "PROTECTION:3"
+  boots:
+    material: NETHERITE_BOOTS
+    enchantments:
+      - "PROTECTION:3"
+
+effects:
+  - "RESISTANCE:1"
+
+abilities:
+  - "strength"
+  - "lightning"
+

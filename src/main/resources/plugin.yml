@@ -9,7 +9,7 @@ softdepend: [Vault, PlaceholderAPI, ProtocolLib]
 commands:
   kitpvp:
     description: Main KitPvP command
-    usage: /kitpvp [help|reload|setspawn|setzone|createkit|editkit|deletekit|gui]
+    usage: /kitpvp [help|reload|setspawn|setzone|createkit|editkit|deletekit|gui|leave]
     aliases: [kp]
   kits:
     description: Open kit selection GUI
@@ -27,6 +27,10 @@ commands:
     usage: /givemoney <player> <amount>
     aliases: [givecoins, addmoney]
     permission: kitpvp.command.givemoney
+  hub:
+    description: Return to the hub
+    usage: /hub
+    aliases: [leave, lobby]
 
 permissions:
   kitpvp.*:
@@ -35,6 +39,10 @@ permissions:
       kitpvp.admin: true
       kitpvp.kit.*: true
       kitpvp.ability.*: true
+      kitpvp.build: true
+  kitpvp.build:
+    description: Allow breaking and placing blocks
+    default: op
   kitpvp.admin:
     description: Admin permissions
     default: op
@@ -47,6 +55,7 @@ permissions:
       kitpvp.command.editkit: true
       kitpvp.command.deletekit: true
       kitpvp.command.gui: true
+      kitpvp.build: true
   kitpvp.command.reload:
     description: Reload configuration
     default: op
@@ -77,6 +86,20 @@ permissions:
       kitpvp.kit.warrior: true
       kitpvp.kit.archer: true
       kitpvp.kit.tank: true
+      kitpvp.kit.pyromancer: true
+      kitpvp.kit.frostmage: true
+      kitpvp.kit.stormknight: true
+      kitpvp.kit.assassin: true
+      kitpvp.kit.berserker: true
+      kitpvp.kit.ninja: true
+      kitpvp.kit.medic: true
+      kitpvp.kit.scout: true
+      kitpvp.kit.demon: true
+      kitpvp.kit.paladin: true
+      kitpvp.kit.icewarrior: true
+      kitpvp.kit.shadowmage: true
+      kitpvp.kit.gladiator: true
+      kitpvp.kit.ghost: true
   kitpvp.kit.warrior:
     description: Access to Warrior kit
     default: true
@@ -85,6 +108,48 @@ permissions:
     default: true
   kitpvp.kit.tank:
     description: Access to Tank kit
+    default: true
+  kitpvp.kit.pyromancer:
+    description: Access to Pyromancer kit
+    default: true
+  kitpvp.kit.frostmage:
+    description: Access to Frost Mage kit
+    default: true
+  kitpvp.kit.stormknight:
+    description: Access to Storm Knight kit
+    default: true
+  kitpvp.kit.assassin:
+    description: Access to Assassin kit
+    default: true
+  kitpvp.kit.berserker:
+    description: Access to Berserker kit
+    default: true
+  kitpvp.kit.ninja:
+    description: Access to Ninja kit
+    default: true
+  kitpvp.kit.medic:
+    description: Access to Medic kit
+    default: true
+  kitpvp.kit.scout:
+    description: Access to Scout kit
+    default: true
+  kitpvp.kit.demon:
+    description: Access to Demon kit
+    default: true
+  kitpvp.kit.paladin:
+    description: Access to Paladin kit
+    default: true
+  kitpvp.kit.icewarrior:
+    description: Access to Ice Warrior kit
+    default: true
+  kitpvp.kit.shadowmage:
+    description: Access to Shadow Mage kit
+    default: true
+  kitpvp.kit.gladiator:
+    description: Access to Gladiator kit
+    default: true
+  kitpvp.kit.ghost:
+    description: Access to Ghost kit
     default: true
   kitpvp.ability.*:
     description: Access to all abilities

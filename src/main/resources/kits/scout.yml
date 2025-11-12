@@ -1,0 +1,70 @@
+name: "<yellow><bold>Scout</bold></yellow>"
+description: "<gray>Speed and mobility specialist</gray>"
+icon:
+  material: FEATHER
+  name: "<yellow><bold>Scout Kit</bold></yellow>"
+  lore:
+    - "<gray>Lightning fast movement!</gray>"
+    - ""
+    - "<yellow>Ability: <yellow>Dash</yellow></yellow>"
+    - "<gray>Burst of speed forward!</gray>"
+    - ""
+    - "<gray>Price: <green>$600</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.scout"
+price: 600
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: STONE_SWORD
+    name: "<yellow>Scout Sword</yellow>"
+    enchantments:
+      - "SHARPNESS:1"
+      - "KNOCKBACK:2"
+  - slot: 1
+    material: BOW
+    name: "<yellow>Quick Bow</yellow>"
+    enchantments:
+      - "POWER:1"
+  - slot: 2
+    material: ARROW
+    amount: 24
+  - slot: 7
+    material: FEATHER
+    name: "<yellow>Dash Ability</yellow>"
+    lore:
+      - "<gray>Right-click to dash forward!</gray>"
+      - "<yellow>Cooldown: 10s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 16
+
+armor:
+  helmet:
+    material: LEATHER_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: LEATHER_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: LEATHER_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: LEATHER_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+      - "FEATHER_FALLING:4"
+
+effects:
+  - "SPEED:3"
+  - "JUMP_BOOST:2"
+
+abilities:
+  - "dash"
+

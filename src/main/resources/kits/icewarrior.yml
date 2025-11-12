@@ -1,0 +1,72 @@
+name: "<aqua><bold>Ice Warrior</bold></aqua>"
+description: "<gray>Master of ice and mobility</gray>"
+icon:
+  material: DIAMOND_SWORD
+  name: "<aqua><bold>Ice Warrior Kit</bold></aqua>"
+  lore:
+    - "<gray>Freeze and dash through enemies!</gray>"
+    - ""
+    - "<yellow>Abilities: <aqua>Freeze</aqua> & <yellow>Dash</yellow></yellow>"
+    - "<gray>Control and mobility!</gray>"
+    - ""
+    - "<gray>Price: <green>$1400</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.icewarrior"
+price: 1400
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_SWORD
+    name: "<aqua>Frozen Blade</aqua>"
+    enchantments:
+      - "SHARPNESS:2"
+      - "KNOCKBACK:2"
+  - slot: 1
+    material: SNOWBALL
+    amount: 24
+    name: "<aqua>Ice Shard</aqua>"
+  - slot: 7
+    material: PACKED_ICE
+    name: "<aqua>Freeze Ability</aqua>"
+    lore:
+      - "<gray>Right-click to freeze nearby enemies!</gray>"
+      - "<yellow>Cooldown: 25s</yellow>"
+  - slot: 6
+    material: FEATHER
+    name: "<yellow>Dash Ability</yellow>"
+    lore:
+      - "<gray>Right-click to dash forward!</gray>"
+      - "<yellow>Cooldown: 10s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 20
+
+armor:
+  helmet:
+    material: DIAMOND_HELMET
+    enchantments:
+      - "PROTECTION:2"
+  chestplate:
+    material: DIAMOND_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+  leggings:
+    material: DIAMOND_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+  boots:
+    material: DIAMOND_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+      - "DEPTH_STRIDER:3"
+
+effects:
+  - "SPEED:2"
+
+abilities:
+  - "freeze"
+  - "dash"
+

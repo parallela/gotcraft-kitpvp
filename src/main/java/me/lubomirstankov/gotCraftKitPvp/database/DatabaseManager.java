@@ -138,7 +138,9 @@ public class DatabaseManager {
 
     public void close() {
         if (dataSource != null && !dataSource.isClosed()) {
+            plugin.getLogger().info("Closing database connection pool...");
             dataSource.close();
+            plugin.getLogger().info("Database connection pool closed.");
         }
     }
 

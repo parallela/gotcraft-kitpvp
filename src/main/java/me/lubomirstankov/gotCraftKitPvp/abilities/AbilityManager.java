@@ -79,10 +79,8 @@ public class AbilityManager {
             return false;
         }
 
-        // Check permission
-        if (!ability.getPermission().isEmpty() && !player.hasPermission(ability.getPermission())) {
-            return false;
-        }
+        // Permission check removed - all players can use abilities
+        // Abilities are now controlled by kit selection instead of permissions
 
         // Check cooldown
         if (hasCooldown(player, abilityId)) {
@@ -156,7 +154,13 @@ public class AbilityManager {
 
     private boolean executeFireball(Player player, Ability ability) {
         Fireball fireball = player.launchProjectile(Fireball.class);
-        fireball.setYield(1.0f);
+
+        // Prevent block damage - yield 0 means no explosion damage to blocks
+        fireball.setYield(0.0f);
+
+        // Prevent setting blocks on fire
+        fireball.setIsIncendiary(false);
+
         fireball.setShooter(player);
 
         player.playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1.0f, 1.0f);

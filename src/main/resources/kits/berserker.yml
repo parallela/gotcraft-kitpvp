@@ -1,0 +1,64 @@
+name: "<red><bold>Berserker</bold></red>"
+description: "<gray>Unleash raw power and strength</gray>"
+icon:
+  material: DIAMOND_AXE
+  name: "<red><bold>Berserker Kit</bold></red>"
+  lore:
+    - "<gray>Overwhelming strength and power!</gray>"
+    - ""
+    - "<yellow>Ability: <red>Strength</red></yellow>"
+    - "<gray>Gain temporary strength boost!</gray>"
+    - ""
+    - "<gray>Price: <green>$1100</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.berserker"
+price: 1100
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_AXE
+    name: "<red>Berserker Axe</red>"
+    enchantments:
+      - "SHARPNESS:3"
+  - slot: 1
+    material: IRON_SWORD
+    name: "<red>War Sword</red>"
+    enchantments:
+      - "SHARPNESS:2"
+  - slot: 7
+    material: BLAZE_POWDER
+    name: "<red>Strength Ability</red>"
+    lore:
+      - "<gray>Right-click for temporary strength!</gray>"
+      - "<yellow>Cooldown: 35s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 20
+
+armor:
+  helmet:
+    material: IRON_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: IRON_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: IRON_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: IRON_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+
+effects:
+  - "SPEED:1"
+
+abilities:
+  - "strength"
+

@@ -1,59 +1,64 @@
-name: "<dark_red><bold>Tank</bold></dark_red>"
-description: "<gray>Heavy armor and high defense</gray>"
+name: "<dark_aqua><bold>Tank</bold></dark_aqua>"
+description: "<gray>Heavy armor with healing ability</gray>"
 icon:
   material: DIAMOND_CHESTPLATE
-  name: "<dark_red><bold>Tank Kit</bold></dark_red>"
+  name: "<dark_aqua><bold>Tank Kit</bold></dark_aqua>"
   lore:
-    - "<gray>Heavy armor with high resistance</gray>"
+    - "<gray>Maximum protection with self-healing</gray>"
     - ""
-    - "<yellow>Ability: <red>Strength</red></yellow>"
-    - "<gray>Gain temporary strength!</gray>"
+    - "<yellow>Ability: <green>Heal</green></yellow>"
+    - "<gray>Restore your health!</gray>"
     - ""
-    - "<gray>Price: <green>$1000</green></gray>"
+    - "<gray>Price: <green>$1500</green></gray>"
     - "<green>Click to select!</green>"
 
 permission: "kitpvp.kit.tank"
-price: 1000
+price: 1500
 free: false
 cooldown: 0
 
 items:
   - slot: 0
-    material: STONE_SWORD
-    name: "<dark_red>Tank Sword</dark_red>"
+    material: DIAMOND_SWORD
+    name: "<dark_aqua>Tank Sword</dark_aqua>"
     enchantments:
       - "SHARPNESS:1"
   - slot: 7
-    material: BLAZE_POWDER
-    name: "<red>Strength Ability</red>"
+    material: GOLDEN_APPLE
+    name: "<green>Heal Ability</green>"
     lore:
-      - "<gray>Right-click for temporary strength!</gray>"
-      - "<yellow>Cooldown: 35s</yellow>"
+      - "<gray>Right-click to restore health!</gray>"
+      - "<yellow>Cooldown: 30s</yellow>"
   - slot: 8
     material: COOKED_BEEF
-    amount: 32
+    amount: 24
 
 armor:
   helmet:
     material: DIAMOND_HELMET
     enchantments:
-      - "PROTECTION:2"
+      - "PROTECTION:3"
+      - "UNBREAKING:2"
   chestplate:
     material: DIAMOND_CHESTPLATE
     enchantments:
-      - "PROTECTION:2"
+      - "PROTECTION:3"
+      - "UNBREAKING:2"
   leggings:
     material: DIAMOND_LEGGINGS
     enchantments:
-      - "PROTECTION:2"
+      - "PROTECTION:3"
+      - "UNBREAKING:2"
   boots:
     material: DIAMOND_BOOTS
     enchantments:
-      - "PROTECTION:2"
+      - "PROTECTION:3"
+      - "FEATHER_FALLING:3"
+      - "UNBREAKING:2"
 
 effects:
   - "RESISTANCE:1"
 
 abilities:
-  - "strength"
+  - "heal"
 

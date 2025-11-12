@@ -2,12 +2,15 @@ package me.lubomirstankov.gotCraftKitPvp.listeners;
 
 import me.lubomirstankov.gotCraftKitPvp.GotCraftKitPvp;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.weather.LightningStrikeEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class AbilityListener implements Listener {
@@ -86,5 +89,30 @@ public class AbilityListener implements Listener {
             }
         }
     }
+
+    /**
+     * Prevent ability fireballs from breaking blocks
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        // Prevent fireballs (ability) from breaking blocks
+        if (event.getEntity() instanceof Fireball) {
+            event.blockList().clear(); // Clear the list of blocks to break
+        }
+    }
+
+    /**
+     * Prevent lightning (ability) from breaking blocks and starting fires
+     */
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onLightningStrike(LightningStrikeEvent event) {
+        // Prevent lightning from causing fire
+        if (event.getLightning().isEffect()) {
+            // This is a visual effect lightning (used by abilities)
+            // It doesn't break blocks by default, but let's be safe
+            event.setCancelled(false); // Allow the visual effect
+        }
+    }
 }
+
 

@@ -3,6 +3,7 @@ package me.lubomirstankov.gotCraftKitPvp.commands;
 import me.lubomirstankov.gotCraftKitPvp.GotCraftKitPvp;
 import me.lubomirstankov.gotCraftKitPvp.kits.Kit;
 import me.lubomirstankov.gotCraftKitPvp.zones.Zone;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -158,6 +159,16 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 handleScoreboardToggle((Player) sender);
+                return true;
+
+            case "leave":
+            case "hub":
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(plugin.getMessageManager().getPlayerOnly());
+                    return true;
+                }
+                // Execute hub command
+                Bukkit.dispatchCommand(sender, "hub");
                 return true;
 
             default:
@@ -319,7 +330,7 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            List<String> subCommands = Arrays.asList("help", "reload", "setspawn", "setzone", "createkit", "editkit", "savekit", "deletekit", "gui", "scoreboard", "sb");
+            List<String> subCommands = Arrays.asList("help", "reload", "setspawn", "setzone", "createkit", "editkit", "savekit", "deletekit", "gui", "scoreboard", "sb", "leave", "hub");
             return subCommands.stream()
                     .filter(s -> s.startsWith(args[0].toLowerCase()))
                     .collect(Collectors.toList());

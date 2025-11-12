@@ -12,6 +12,25 @@ general:
   # Enable debug mode
   debug: false
 
+# Hub/Leave Command
+hub:
+  # Enable hub command (/hub, /leave)
+  enabled: true
+  # Mode: "server" (BungeeCord/Velocity) or "world" (Teleport to location)
+  mode: "server"
+  # Server name (if mode is "server")
+  server-name: "hub"
+  # World location (if mode is "world")
+  location:
+    world: "world"
+    x: 0
+    y: 100
+    z: 0
+    yaw: 0
+    pitch: 0
+  # Message when sending to hub
+  message: "<green>Sending you to the hub...</green>"
+
 # Combat Settings
 combat:
   # Enable 1.8 combat mechanics (no attack cooldown)

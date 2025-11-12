@@ -1,0 +1,127 @@
+name: "<white><bold>Ghost</bold></white>"
+description: "<gray>Phantom warrior of stealth</gray>"
+icon:
+  material: ENDER_PEARL
+  name: "<white><bold>Ghost Kit</bold></white>"
+  lore:
+    - "<gray>Vanish and teleport at will!</gray>"
+    - ""
+    - "<yellow>Abilities: <gray>Invisibility</gray> & <light_purple>Teleport</light_purple></yellow>"
+    - "<gray>Ultimate stealth mobility!</gray>"
+    - ""
+    - "<gray>Price: <green>$1900</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.ghost"
+price: 1900
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_SWORD
+    name: "<white>Phantom Blade</white>"
+    enchantments:
+      - "SHARPNESS:3"
+  - slot: 7
+    material: PHANTOM_MEMBRANE
+    name: "<gray>Invisibility Ability</gray>"
+    lore:
+      - "<gray>Right-click to become invisible!</gray>"
+      - "<yellow>Cooldown: 45s</yellow>"
+  - slot: 6
+    material: ENDER_PEARL
+    name: "<light_purple>Teleport Ability</light_purple>"
+    lore:
+      - "<gray>Right-click to teleport behind target!</gray>"
+      - "<yellow>Cooldown: 30s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 20
+
+armor:
+  helmet:
+    material: IRON_HELMET
+    enchantments:
+      - "PROTECTION:1"
+  chestplate:
+    material: IRON_CHESTPLATE
+    enchantments:
+      - "PROTECTION:1"
+  leggings:
+    material: IRON_LEGGINGS
+    enchantments:
+      - "PROTECTION:1"
+  boots:
+    material: IRON_BOOTS
+    enchantments:
+      - "PROTECTION:1"
+      - "FEATHER_FALLING:4"
+
+effects:
+  - "SPEED:3"
+  - "JUMP_BOOST:2"
+
+abilities:
+  - "invisibility"
+  - "teleport"
+name: "<red><bold>Pyromancer</bold></red>"
+description: "<gray>Master of fire with fireball ability</gray>"
+icon:
+  material: FIRE_CHARGE
+  name: "<red><bold>Pyromancer Kit</bold></red>"
+  lore:
+    - "<gray>Unleash devastating fireballs!</gray>"
+    - ""
+    - "<yellow>Ability: <red>Fireball</red></yellow>"
+    - "<gray>Launch explosive fireballs!</gray>"
+    - ""
+    - "<gray>Price: <green>$800</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.pyromancer"
+price: 800
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: IRON_SWORD
+    name: "<red>Flame Blade</red>"
+    enchantments:
+      - "FIRE_ASPECT:2"
+      - "SHARPNESS:1"
+  - slot: 7
+    material: FIRE_CHARGE
+    name: "<red>Fireball Ability</red>"
+    lore:
+      - "<gray>Right-click to launch a fireball!</gray>"
+      - "<yellow>Cooldown: 15s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 16
+
+armor:
+  helmet:
+    material: GOLDEN_HELMET
+    enchantments:
+      - "FIRE_PROTECTION:3"
+  chestplate:
+    material: GOLDEN_CHESTPLATE
+    enchantments:
+      - "FIRE_PROTECTION:3"
+  leggings:
+    material: GOLDEN_LEGGINGS
+    enchantments:
+      - "FIRE_PROTECTION:3"
+  boots:
+    material: GOLDEN_BOOTS
+    enchantments:
+      - "FIRE_PROTECTION:3"
+
+effects:
+  - "FIRE_RESISTANCE:1"
+
+abilities:
+  - "fireball"
+

@@ -1,0 +1,68 @@
+name: "<blue><bold>Paladin</bold></blue>"
+description: "<gray>Holy warrior with healing power</gray>"
+icon:
+  material: DIAMOND_SWORD
+  name: "<blue><bold>Paladin Kit</bold></blue>"
+  lore:
+    - "<gray>Righteous strength and healing!</gray>"
+    - ""
+    - "<yellow>Abilities: <green>Heal</green> & <yellow>Dash</yellow></yellow>"
+    - "<gray>Tank and heal yourself!</gray>"
+    - ""
+    - "<gray>Price: <green>$1600</green></gray>"
+    - "<green>Click to select!</green>"
+
+permission: "kitpvp.kit.paladin"
+price: 1600
+free: false
+cooldown: 0
+
+items:
+  - slot: 0
+    material: DIAMOND_SWORD
+    name: "<blue>Holy Blade</blue>"
+    enchantments:
+      - "SHARPNESS:2"
+      - "KNOCKBACK:1"
+  - slot: 7
+    material: GOLDEN_APPLE
+    name: "<green>Heal Ability</green>"
+    lore:
+      - "<gray>Right-click to restore health!</gray>"
+      - "<yellow>Cooldown: 30s</yellow>"
+  - slot: 6
+    material: FEATHER
+    name: "<yellow>Dash Ability</yellow>"
+    lore:
+      - "<gray>Right-click to dash forward!</gray>"
+      - "<yellow>Cooldown: 10s</yellow>"
+  - slot: 8
+    material: COOKED_BEEF
+    amount: 24
+
+armor:
+  helmet:
+    material: DIAMOND_HELMET
+    enchantments:
+      - "PROTECTION:2"
+  chestplate:
+    material: DIAMOND_CHESTPLATE
+    enchantments:
+      - "PROTECTION:2"
+  leggings:
+    material: DIAMOND_LEGGINGS
+    enchantments:
+      - "PROTECTION:2"
+  boots:
+    material: DIAMOND_BOOTS
+    enchantments:
+      - "PROTECTION:2"
+      - "FEATHER_FALLING:2"
+
+effects:
+  - "REGENERATION:1"
+
+abilities:
+  - "heal"
+  - "dash"
+
