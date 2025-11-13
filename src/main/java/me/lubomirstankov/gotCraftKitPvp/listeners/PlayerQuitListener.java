@@ -21,7 +21,7 @@ public class PlayerQuitListener implements Listener {
         // Save money balance (IMPORTANT!)
         plugin.getEconomyManager().savePlayerBalance(event.getPlayer());
 
-        // Remove scoreboard
+        // Remove scoreboard and clear cache
         plugin.getScoreboardManager().removeScoreboard(event.getPlayer());
 
         // Clear active kit
@@ -32,6 +32,11 @@ public class PlayerQuitListener implements Listener {
 
         // Close GUI
         plugin.getGuiManager().closeGUI(event.getPlayer());
+
+        // Remove from economy cache after save completes
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            plugin.getEconomyManager().removeFromCache(event.getPlayer().getUniqueId());
+        }, 40L);
 
         // Remove from stats cache after a delay
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

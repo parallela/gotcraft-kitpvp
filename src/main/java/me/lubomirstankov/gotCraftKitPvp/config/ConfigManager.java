@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 
 public class ConfigManager {
@@ -140,6 +141,14 @@ public class ConfigManager {
 
     public int getScoreboardUpdateInterval() {
         return config.getInt("scoreboard.update-interval", 20);
+    }
+
+    public String getScoreboardTitle() {
+        return config.getString("scoreboard.title", "<gold><bold>KITPVP</bold></gold>");
+    }
+
+    public List<String> getScoreboardLines() {
+        return config.getStringList("scoreboard.lines");
     }
 
     public boolean isLeaderboardEnabled() {

@@ -115,15 +115,30 @@ public class EconomyManager {
      * Load a player's balance from database
      */
     public void loadBalance(UUID uuid) {
+        // Immediately set starting balance to prevent showing 0 or placeholders
+        if (!balances.containsKey(uuid)) {
+            balances.put(uuid, startingBalance);
+        }
+
+        // Then load actual balance from database and update
         plugin.getDatabaseManager().getPlayerMoney(uuid).thenAccept(balance -> {
-            if (balance != null) {
+            if (balance != null && balance > 0) {
+                // Player has saved balance - use it
                 balances.put(uuid, balance);
                 plugin.getLogger().info("Loaded balance for " + uuid + ": $" + balance);
+            } else if (balance != null && balance == 0) {
+                // Player has 0 balance saved (spent all money)
+                balances.put(uuid, 0.0);
+                plugin.getLogger().info("Loaded balance for " + uuid + ": $0.00");
             } else {
-                // New player - set starting balance
-                balances.put(uuid, startingBalance);
+                // New player - already set to starting balance above
+                plugin.getLogger().info("New player " + uuid + ", using starting balance: $" + startingBalance);
+                // Save the starting balance to database
                 saveBalanceAsync(uuid, startingBalance);
             }
+        }).exceptionally(ex -> {
+            plugin.getLogger().warning("Failed to load balance for " + uuid + ": " + ex.getMessage());
+            return null;
         });
     }
 
@@ -166,6 +181,14 @@ public class EconomyManager {
             saveBalanceAsync(entry.getKey(), entry.getValue());
         }
         plugin.getLogger().info("Saved " + balances.size() + " player balances!");
+    }
+
+    /**
+     * Remove player from cache (after data is saved)
+     */
+    public void removeFromCache(UUID uuid) {
+        balances.remove(uuid);
+        plugin.getLogger().fine("Removed balance cache for " + uuid);
     }
 
     /**

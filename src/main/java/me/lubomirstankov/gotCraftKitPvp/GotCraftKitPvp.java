@@ -1,5 +1,7 @@
 package me.lubomirstankov.gotCraftKitPvp;
 
+import com.github.retrooper.packetevents.PacketEvents;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
 import me.lubomirstankov.gotCraftKitPvp.abilities.AbilityManager;
 import me.lubomirstankov.gotCraftKitPvp.commands.*;
 import me.lubomirstankov.gotCraftKitPvp.config.ConfigManager;
@@ -7,7 +9,6 @@ import me.lubomirstankov.gotCraftKitPvp.config.MessageManager;
 import me.lubomirstankov.gotCraftKitPvp.database.DatabaseManager;
 import me.lubomirstankov.gotCraftKitPvp.gui.GUIManager;
 import me.lubomirstankov.gotCraftKitPvp.hooks.PlaceholderAPIHook;
-import me.lubomirstankov.gotCraftKitPvp.hooks.VaultHook;
 import me.lubomirstankov.gotCraftKitPvp.kits.KitManager;
 import me.lubomirstankov.gotCraftKitPvp.leaderboard.LeaderboardManager;
 import me.lubomirstankov.gotCraftKitPvp.listeners.*;
@@ -37,11 +38,21 @@ public final class GotCraftKitPvp extends JavaPlugin {
     private me.lubomirstankov.gotCraftKitPvp.economy.EconomyManager economyManager;
 
     // Hooks
-    private VaultHook vaultHook;
     private PlaceholderAPIHook placeholderAPIHook;
 
     // Listeners
     private HealthTagListener healthTagListener;
+
+    @Override
+    public void onLoad() {
+        // Load PacketEvents - MUST be in onLoad()
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().getSettings()
+            .reEncodeByDefault(false)
+            .checkForUpdates(false)
+            .bStats(true);
+        PacketEvents.getAPI().load();
+    }
 
     @Override
     public void onEnable() {
@@ -49,6 +60,9 @@ public final class GotCraftKitPvp extends JavaPlugin {
 
         long startTime = System.currentTimeMillis();
         getLogger().info("Enabling GotCraftKitPvp...");
+
+        // Initialize PacketEvents
+        PacketEvents.getAPI().init();
 
         // Register BungeeCord messaging channel for hub command
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -72,13 +86,27 @@ public final class GotCraftKitPvp extends JavaPlugin {
     public void onDisable() {
         getLogger().info("Disabling GotCraftKitPvp...");
 
+        // Terminate PacketEvents
+        PacketEvents.getAPI().terminate();
+
         // Save all data
         if (statsManager != null) {
             statsManager.saveAllStats();
         }
 
-        // Close database connection
+        // Save all economy balances
+        if (economyManager != null) {
+            economyManager.saveAll();
+        }
+
+        // Close database connection (after saves complete)
         if (databaseManager != null) {
+            // Wait a bit for async saves to complete
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                // Ignore
+            }
             databaseManager.close();
         }
 
@@ -185,14 +213,6 @@ public final class GotCraftKitPvp extends JavaPlugin {
     private void setupHooks() {
         getLogger().info("Setting up hooks...");
 
-        // Vault
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            vaultHook = new VaultHook(this);
-            if (vaultHook.setup()) {
-                getLogger().info("Hooked into Vault!");
-            }
-        }
-
         // PlaceholderAPI
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             placeholderAPIHook = new PlaceholderAPIHook(this);
@@ -261,11 +281,6 @@ public final class GotCraftKitPvp extends JavaPlugin {
 
     public me.lubomirstankov.gotCraftKitPvp.economy.EconomyManager getEconomyManager() {
         return economyManager;
-    }
-
-
-    public VaultHook getVaultHook() {
-        return vaultHook;
     }
 
     public PlaceholderAPIHook getPlaceholderAPIHook() {

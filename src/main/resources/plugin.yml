@@ -4,7 +4,8 @@ main: me.lubomirstankov.gotCraftKitPvp.GotCraftKitPvp
 api-version: '1.21'
 author: lubomirstankov
 description: Professional KitPvP plugin for Paper servers
-softdepend: [Vault, PlaceholderAPI, ProtocolLib]
+depend: [packetevents]
+softdepend: [Vault, PlaceholderAPI]
 
 commands:
   kitpvp:

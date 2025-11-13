@@ -22,6 +22,13 @@ public class StatsManager {
                 .thenAccept(stats -> {
                     statsCache.put(uuid, stats);
                     plugin.getLogger().info("Loaded stats for " + player.getName());
+
+                    // Force scoreboard update now that stats are loaded
+                    plugin.getServer().getScheduler().runTask(plugin, () -> {
+                        if (player.isOnline()) {
+                            plugin.getScoreboardManager().updateScoreboard(player);
+                        }
+                    });
                 });
     }
 
@@ -91,12 +98,6 @@ public class StatsManager {
                 handleKillStreak(killer, killerStats.getCurrentStreak());
             }
 
-            // Economy reward
-            if (plugin.getConfigManager().isEconomyEnabled() && plugin.getVaultHook() != null) {
-                double reward = plugin.getConfigManager().getMoneyPerKill();
-                plugin.getVaultHook().depositMoney(killer, reward);
-            }
-
             // Save stats
             plugin.getDatabaseManager().savePlayerStats(killerStats);
         }
@@ -110,11 +111,6 @@ public class StatsManager {
                 victimStats.removeXP(xpLost);
             }
 
-            // Economy penalty
-            if (plugin.getConfigManager().isEconomyEnabled() && plugin.getVaultHook() != null) {
-                double penalty = plugin.getConfigManager().getMoneyPerDeath();
-                plugin.getVaultHook().withdrawMoney(victim, penalty);
-            }
 
             // Save stats
             plugin.getDatabaseManager().savePlayerStats(victimStats);

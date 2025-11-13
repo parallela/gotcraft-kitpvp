@@ -111,13 +111,6 @@ public class DatabaseManager {
                 stmt.execute(createStatsTable);
             }
 
-            // Add money column if it doesn't exist (for existing databases)
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute("ALTER TABLE player_stats ADD COLUMN money DOUBLE DEFAULT 0.0");
-            } catch (SQLException e) {
-                // Column already exists, ignore
-            }
-
             // Kit purchases table (for economy)
             String createKitPurchasesTable = "CREATE TABLE IF NOT EXISTS kit_purchases ("
                     + "uuid VARCHAR(36),"

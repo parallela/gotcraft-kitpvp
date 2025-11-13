@@ -119,6 +119,9 @@ public class GUIManager {
 
         PlayerStats stats = plugin.getStatsManager().getStats(target);
         if (stats == null) {
+            // Stats not loaded yet - send message and try to load
+            player.sendMessage(plugin.getMessageManager().parseLegacy("<red>Stats not loaded yet! Please try again in a moment."));
+            plugin.getLogger().warning("Stats for " + target.getName() + " not loaded when opening stats GUI");
             return;
         }
 
