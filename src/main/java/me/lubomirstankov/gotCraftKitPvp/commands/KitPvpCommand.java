@@ -180,8 +180,10 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
     private void handleSetZone(Player player, String[] args) {
         String zoneType = args[1].toUpperCase();
 
-        if (!zoneType.equals("SAFE") && !zoneType.equals("PVP")) {
-            plugin.getMessageManager().sendRawMessage(player, "<red>Invalid zone type! Use SAFE or PVP");
+        if (!zoneType.equals("SAFE") && !zoneType.equals("PVP") &&
+            !zoneType.equals("DOUBLE_DAMAGE") && !zoneType.equals("GRAVITY") &&
+            !zoneType.equals("LEVITATION") && !zoneType.equals("NAUSEA")) {
+            plugin.getMessageManager().sendRawMessage(player, "<red>Invalid zone type! Use: SAFE, PVP, DOUBLE_DAMAGE, GRAVITY, LEVITATION, NAUSEA");
             return;
         }
 
@@ -338,7 +340,7 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 2) {
             if (args[0].equalsIgnoreCase("setzone")) {
-                return Arrays.asList("safe", "pvp");
+                return Arrays.asList("safe", "pvp", "double_damage", "gravity", "levitation", "nausea");
             }
 
             if (args[0].equalsIgnoreCase("editkit") || args[0].equalsIgnoreCase("savekit") || args[0].equalsIgnoreCase("deletekit")) {
