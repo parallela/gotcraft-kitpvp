@@ -42,6 +42,7 @@ public final class GotCraftKitPvp extends JavaPlugin {
 
     // Listeners
     private HealthTagListener healthTagListener;
+    private HealthRegenerationListener healthRegenerationListener;
 
     @Override
     public void onLoad() {
@@ -113,6 +114,11 @@ public final class GotCraftKitPvp extends JavaPlugin {
         // Clear scoreboards
         if (scoreboardManager != null) {
             scoreboardManager.shutdown();
+        }
+
+        // Stop health regeneration task
+        if (healthRegenerationListener != null) {
+            healthRegenerationListener.shutdown();
         }
 
         getLogger().info("GotCraftKitPvp disabled!");
@@ -203,6 +209,9 @@ public final class GotCraftKitPvp extends JavaPlugin {
 
         healthTagListener = new HealthTagListener(this);
         getServer().getPluginManager().registerEvents(healthTagListener, this);
+
+        healthRegenerationListener = new HealthRegenerationListener(this);
+        getServer().getPluginManager().registerEvents(healthRegenerationListener, this);
 
         getServer().getPluginManager().registerEvents(new AbilityListener(this), this);
         getServer().getPluginManager().registerEvents(new ZoneSelectionListener(this), this);

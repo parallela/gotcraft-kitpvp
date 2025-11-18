@@ -166,5 +166,26 @@ public class ConfigManager {
     public boolean isAbilitiesEnabled() {
         return config.getBoolean("abilities.enabled", true);
     }
+
+    // Health regeneration settings
+    public boolean isHealthRegenEnabled() {
+        return config.getBoolean("combat.health-regeneration.enabled", true);
+    }
+
+    public boolean disableVanillaRegen() {
+        return config.getBoolean("combat.health-regeneration.disable-vanilla-regen", true);
+    }
+
+    public double getHealthRegenRate() {
+        return config.getDouble("combat.health-regeneration.rate", 0.5);
+    }
+
+    public int getHealthRegenDelay() {
+        return config.getInt("combat.health-regeneration.delay-after-damage", 3);
+    }
+
+    public double getHealthRegenMaxHealth() {
+        return config.getDouble("combat.health-regeneration.max-health", 20.0);
+    }
 }
 

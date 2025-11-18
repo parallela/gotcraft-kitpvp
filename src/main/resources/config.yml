@@ -53,6 +53,18 @@ combat:
   void-teleport: true
   # Void Y level
   void-level: 0
+  # Health regeneration settings
+  health-regeneration:
+    # Enable natural health regeneration
+    enabled: true
+    # Disable vanilla hunger-based regeneration (recommended for KitPvP)
+    disable-vanilla-regen: true
+    # Custom regeneration rate (hearts per second, 0 = disabled)
+    rate: 0.5
+    # Delay after taking damage before regeneration starts (seconds, 0 = instant)
+    delay-after-damage: 3
+    # Maximum health to regenerate to (20 = full health)
+    max-health: 20
 
 # Kill Streaks
 kill-streaks:
