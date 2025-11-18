@@ -40,6 +40,11 @@ public class DamageListener implements Listener {
             }
         }
 
+        // Check if in double damage zone
+        if (plugin.getZoneManager().isInDoubleDamageZone(player.getLocation())) {
+            event.setDamage(event.getDamage() * 2.0);
+        }
+
         // Fall damage in PvP zones
         if (event.getCause() == EntityDamageEvent.DamageCause.FALL) {
             if (!plugin.getConfig().getBoolean("combat.fall-damage", false)) {

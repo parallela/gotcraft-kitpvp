@@ -22,6 +22,7 @@ public class ZoneManager {
         loadZones();
         loadArenaSpawn();
         startHealingTask();
+        startEffectTask();
     }
 
     public void loadZones() {
@@ -144,6 +145,26 @@ public class ZoneManager {
         return zone != null && zone.getType() == Zone.ZoneType.PVP;
     }
 
+    public boolean isInDoubleDamageZone(Location location) {
+        Zone zone = getZoneAt(location);
+        return zone != null && zone.getType() == Zone.ZoneType.DOUBLE_DAMAGE;
+    }
+
+    public boolean isInGravityZone(Location location) {
+        Zone zone = getZoneAt(location);
+        return zone != null && zone.getType() == Zone.ZoneType.GRAVITY;
+    }
+
+    public boolean isInLevitationZone(Location location) {
+        Zone zone = getZoneAt(location);
+        return zone != null && zone.getType() == Zone.ZoneType.LEVITATION;
+    }
+
+    public boolean isInNauseaZone(Location location) {
+        Zone zone = getZoneAt(location);
+        return zone != null && zone.getType() == Zone.ZoneType.NAUSEA;
+    }
+
     public void updatePlayerZone(Player player) {
         Zone previousZone = playerZones.get(player.getUniqueId());
         Zone currentZone = getZoneAt(player.getLocation());
@@ -162,18 +183,48 @@ public class ZoneManager {
     }
 
     private void handleZoneEnter(Player player, Zone zone) {
-        if (zone.getType() == Zone.ZoneType.SAFE) {
-            plugin.getMessageManager().sendMessage(player, "safe-zone-enter");
-        } else if (zone.getType() == Zone.ZoneType.PVP) {
-            plugin.getMessageManager().sendMessage(player, "pvp-zone-enter");
+        switch (zone.getType()) {
+            case SAFE:
+                plugin.getMessageManager().sendMessage(player, "safe-zone-enter");
+                break;
+            case PVP:
+                plugin.getMessageManager().sendMessage(player, "pvp-zone-enter");
+                break;
+            case DOUBLE_DAMAGE:
+                player.sendMessage("§c§l⚔ §cYou entered a §4DOUBLE DAMAGE §czone!");
+                break;
+            case GRAVITY:
+                player.sendMessage("§b§l✦ §bYou entered a §3GRAVITY §bzone! You will float!");
+                break;
+            case LEVITATION:
+                player.sendMessage("§e§l↑ §eYou entered a §6LEVITATION §ezone!");
+                break;
+            case NAUSEA:
+                player.sendMessage("§5§l✹ §5You entered a §dNAUSEA §5zone!");
+                break;
         }
     }
 
     private void handleZoneExit(Player player, Zone zone) {
-        if (zone.getType() == Zone.ZoneType.SAFE) {
-            plugin.getMessageManager().sendMessage(player, "safe-zone-exit");
-        } else if (zone.getType() == Zone.ZoneType.PVP) {
-            plugin.getMessageManager().sendMessage(player, "pvp-zone-exit");
+        switch (zone.getType()) {
+            case SAFE:
+                plugin.getMessageManager().sendMessage(player, "safe-zone-exit");
+                break;
+            case PVP:
+                plugin.getMessageManager().sendMessage(player, "pvp-zone-exit");
+                break;
+            case DOUBLE_DAMAGE:
+                player.sendMessage("§c§l⚔ §7You left the §4DOUBLE DAMAGE §7zone.");
+                break;
+            case GRAVITY:
+                player.sendMessage("§b§l✦ §7You left the §3GRAVITY §7zone.");
+                break;
+            case LEVITATION:
+                player.sendMessage("§e§l↑ §7You left the §6LEVITATION §7zone.");
+                break;
+            case NAUSEA:
+                player.sendMessage("§5§l✹ §7You left the §dNAUSEA §7zone.");
+                break;
         }
     }
 
@@ -219,6 +270,54 @@ public class ZoneManager {
                 }
             }
         }, interval, interval);
+    }
+
+    private void startEffectTask() {
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                Location loc = player.getLocation();
+
+                // Apply Gravity effect (levitation with low amplitude to make player float)
+                if (isInGravityZone(loc)) {
+                    player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                            org.bukkit.potion.PotionEffectType.LEVITATION,
+                            60,
+                            0,
+                            false,
+                            false,
+                            false
+                    ));
+                }
+
+                // Apply Levitation effect (15 seconds duration when entering)
+                if (isInLevitationZone(loc)) {
+                    // Check if player doesn't already have levitation or has low duration
+                    org.bukkit.potion.PotionEffect currentLevitation = player.getPotionEffect(org.bukkit.potion.PotionEffectType.LEVITATION);
+                    if (currentLevitation == null || currentLevitation.getDuration() < 40) {
+                        player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                                org.bukkit.potion.PotionEffectType.LEVITATION,
+                                300, // 15 seconds
+                                1,
+                                false,
+                                false,
+                                false
+                        ));
+                    }
+                }
+
+                // Apply Nausea effect
+                if (isInNauseaZone(loc)) {
+                    player.addPotionEffect(new org.bukkit.potion.PotionEffect(
+                            org.bukkit.potion.PotionEffectType.NAUSEA,
+                            300, // 15 seconds
+                            0,
+                            false,
+                            false,
+                            false
+                    ));
+                }
+            }
+        }, 20L, 20L); // Run every second
     }
 
     public Collection<Zone> getAllZones() {

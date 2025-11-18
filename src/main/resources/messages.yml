@@ -95,7 +95,8 @@ help-commands:
   - "<aqua>/kitpvp scoreboard</aqua> <gray>- Toggle scoreboard visibility"
 help-admin-commands:
   - "<red>/kitpvp setspawn</red> <gray>- Set arena spawn"
-  - "<red>/kitpvp setzone <safe|pvp></red> <gray>- Get zone selection wand"
+  - "<red>/kitpvp setzone <type></red> <gray>- Get zone selection wand"
+  - "<gray>  Types: <yellow>safe, pvp, double_damage, gravity, levitation, nausea"
   - "<red>/kitpvp createkit <name></red> <gray>- Create kit"
   - "<red>/kitpvp editkit <name></red> <gray>- Edit kit"
   - "<red>/kitpvp deletekit <name></red> <gray>- Delete kit"

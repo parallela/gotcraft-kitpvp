@@ -56,7 +56,11 @@ public class Zone {
 
     public enum ZoneType {
         SAFE,
-        PVP
+        PVP,
+        DOUBLE_DAMAGE,
+        GRAVITY,
+        LEVITATION,
+        NAUSEA
     }
 }
 
