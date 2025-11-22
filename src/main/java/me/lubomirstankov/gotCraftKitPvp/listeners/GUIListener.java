@@ -99,22 +99,32 @@ public class GUIListener implements Listener {
                         return;
                     }
 
-                    // Check if kit needs to be purchased
+                    // Check if kit needs to be purchased (ASYNC to avoid blocking main thread)
                     if (!kit.isFree() && kit.getPrice() > 0) {
-                        boolean purchased = plugin.getDatabaseManager().hasKitPurchased(player.getUniqueId(), kit.getId()).join();
-                        if (!purchased) {
-                            // Attempt to purchase
-                            if (plugin.getKitManager().purchaseKit(player, kit)) {
-                                // Purchased successfully, give kit
-                                plugin.getKitManager().giveKit(player, kit);
-                                player.closeInventory();
-                                plugin.getGuiManager().closeGUI(player);
-                            }
-                            return;
-                        }
+                        final Kit selectedKit = kit; // Final reference for lambda
+                        plugin.getDatabaseManager().hasKitPurchased(player.getUniqueId(), kit.getId()).thenAccept(purchased -> {
+                            // Run on main thread
+                            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                                if (!purchased) {
+                                    // Attempt to purchase
+                                    if (plugin.getKitManager().purchaseKit(player, selectedKit)) {
+                                        // Purchased successfully, give kit
+                                        plugin.getKitManager().giveKit(player, selectedKit);
+                                        player.closeInventory();
+                                        plugin.getGuiManager().closeGUI(player);
+                                    }
+                                } else {
+                                    // Already purchased, give kit
+                                    plugin.getKitManager().giveKit(player, selectedKit);
+                                    player.closeInventory();
+                                    plugin.getGuiManager().closeGUI(player);
+                                }
+                            });
+                        });
+                        return;
                     }
 
-                    // Give kit
+                    // Give kit (free or no price check needed)
                     plugin.getKitManager().giveKit(player, kit);
                     player.closeInventory();
                     plugin.getGuiManager().closeGUI(player);

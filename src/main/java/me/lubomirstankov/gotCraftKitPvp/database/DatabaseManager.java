@@ -270,53 +270,70 @@ public class DatabaseManager {
     }
 
     /**
-     * Save player stats SYNCHRONOUSLY with transaction
+     * Save player stats SYNCHRONOUSLY with transaction (optimized to reduce lock time)
      */
     private void savePlayerStatsSync(PlayerStats stats) throws SQLException {
-        dbLock.writeLock().lock();
-        try (Connection conn = getConnection()) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
             conn.setAutoCommit(false);
 
-            try {
-                String query = String.format(
-                    "INSERT INTO %splayers (uuid, name, kills, deaths, current_streak, best_streak, level, xp, money, last_kit, created_at, updated_at) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0.00, ?, ?, ?) " +
-                    "ON CONFLICT (uuid) DO UPDATE SET " +
-                    "name = EXCLUDED.name, " +
-                    "kills = EXCLUDED.kills, " +
-                    "deaths = EXCLUDED.deaths, " +
-                    "current_streak = EXCLUDED.current_streak, " +
-                    "best_streak = EXCLUDED.best_streak, " +
-                    "level = EXCLUDED.level, " +
-                    "xp = EXCLUDED.xp, " +
-                    "last_kit = EXCLUDED.last_kit, " +
-                    "updated_at = EXCLUDED.updated_at",
-                    TABLE_PREFIX
-                );
+            String query = String.format(
+                "INSERT INTO %splayers (uuid, name, kills, deaths, current_streak, best_streak, level, xp, last_kit, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+                "ON CONFLICT (uuid) DO UPDATE SET " +
+                "name = EXCLUDED.name, " +
+                "kills = EXCLUDED.kills, " +
+                "deaths = EXCLUDED.deaths, " +
+                "current_streak = EXCLUDED.current_streak, " +
+                "best_streak = EXCLUDED.best_streak, " +
+                "level = EXCLUDED.level, " +
+                "xp = EXCLUDED.xp, " +
+                "last_kit = EXCLUDED.last_kit, " +
+                "updated_at = EXCLUDED.updated_at",
+                TABLE_PREFIX
+            );
 
-                try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                    stmt.setObject(1, stats.getUuid());
-                    stmt.setString(2, stats.getName());
-                    stmt.setInt(3, stats.getKills());
-                    stmt.setInt(4, stats.getDeaths());
-                    stmt.setInt(5, stats.getCurrentStreak());
-                    stmt.setInt(6, stats.getBestStreak());
-                    stmt.setInt(7, stats.getLevel());
-                    stmt.setInt(8, stats.getXp());
-                    stmt.setString(9, stats.getLastKit());
-                    long now = System.currentTimeMillis();
-                    stmt.setLong(10, now);
-                    stmt.setLong(11, now);
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setObject(1, stats.getUuid());
+                stmt.setString(2, stats.getName());
+                stmt.setInt(3, stats.getKills());
+                stmt.setInt(4, stats.getDeaths());
+                stmt.setInt(5, stats.getCurrentStreak());
+                stmt.setInt(6, stats.getBestStreak());
+                stmt.setInt(7, stats.getLevel());
+                stmt.setInt(8, stats.getXp());
+                stmt.setString(9, stats.getLastKit());
+                long now = System.currentTimeMillis();
+                stmt.setLong(10, now);
+                stmt.setLong(11, now);
+
+                // Quick lock just for the execute
+                dbLock.writeLock().lock();
+                try {
                     stmt.executeUpdate();
+                    conn.commit();
+                } finally {
+                    dbLock.writeLock().unlock();
                 }
-
-                conn.commit();
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
             }
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    // Ignore rollback errors
+                }
+            }
+            throw e;
         } finally {
-            dbLock.writeLock().unlock();
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    // Ignore close errors
+                }
+            }
         }
     }
 
@@ -364,7 +381,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Save player money with ATOMIC operation
+     * Save player money with ATOMIC operation (optimized to reduce lock time)
      */
     public CompletableFuture<Void> savePlayerMoney(UUID uuid, double money) {
         // Update pending writes
@@ -376,40 +393,56 @@ public class DatabaseManager {
         }
 
         return CompletableFuture.runAsync(() -> {
-            dbLock.writeLock().lock();
-            try (Connection conn = getConnection()) {
+            Connection conn = null;
+            try {
+                conn = getConnection();
                 conn.setAutoCommit(false);
 
-                try {
-                    // Upsert money value
-                    String query = String.format(
-                        "INSERT INTO %splayers (uuid, name, money, created_at, updated_at) " +
-                        "VALUES (?, 'Unknown', ?, ?, ?) " +
-                        "ON CONFLICT (uuid) DO UPDATE SET " +
-                        "money = EXCLUDED.money, " +
-                        "updated_at = EXCLUDED.updated_at",
-                        TABLE_PREFIX
-                    );
+                // Upsert money value - acquire lock only during actual write
+                String query = String.format(
+                    "INSERT INTO %splayers (uuid, name, money, created_at, updated_at) " +
+                    "VALUES (?, 'Unknown', ?, ?, ?) " +
+                    "ON CONFLICT (uuid) DO UPDATE SET " +
+                    "money = EXCLUDED.money, " +
+                    "updated_at = EXCLUDED.updated_at",
+                    TABLE_PREFIX
+                );
 
-                    try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                        stmt.setObject(1, uuid);
-                        stmt.setDouble(2, money);
-                        long now = System.currentTimeMillis();
-                        stmt.setLong(3, now);
-                        stmt.setLong(4, now);
+                try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                    stmt.setObject(1, uuid);
+                    stmt.setDouble(2, money);
+                    long now = System.currentTimeMillis();
+                    stmt.setLong(3, now);
+                    stmt.setLong(4, now);
+
+                    // Quick lock just for the execute
+                    dbLock.writeLock().lock();
+                    try {
                         stmt.executeUpdate();
+                        conn.commit();
+                    } finally {
+                        dbLock.writeLock().unlock();
                     }
-
-                    conn.commit();
-                    pendingWrites.remove(uuid);
-                } catch (SQLException e) {
-                    conn.rollback();
-                    throw e;
                 }
+
+                pendingWrites.remove(uuid);
             } catch (SQLException e) {
                 plugin.getLogger().log(Level.SEVERE, "CRITICAL: Failed to save player money for " + uuid, e);
+                if (conn != null) {
+                    try {
+                        conn.rollback();
+                    } catch (SQLException ex) {
+                        // Ignore rollback errors
+                    }
+                }
             } finally {
-                dbLock.writeLock().unlock();
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        // Ignore close errors
+                    }
+                }
             }
         });
     }

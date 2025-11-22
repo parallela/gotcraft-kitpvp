@@ -49,14 +49,14 @@ public class StatsManager {
             saveFutures.add(plugin.getDatabaseManager().savePlayerStats(stats));
         }
 
-        // Wait for all saves to complete
+        // Wait for all saves to complete (reduced timeout to avoid watchdog)
         if (!saveFutures.isEmpty()) {
             try {
                 java.util.concurrent.CompletableFuture.allOf(saveFutures.toArray(new java.util.concurrent.CompletableFuture[0]))
-                        .get(10, java.util.concurrent.TimeUnit.SECONDS); // 10 second timeout
+                        .get(3, java.util.concurrent.TimeUnit.SECONDS); // 3 second timeout
                 plugin.getLogger().info("All stats saved successfully!");
             } catch (java.util.concurrent.TimeoutException e) {
-                plugin.getLogger().warning("Timed out waiting for stats to save!");
+                plugin.getLogger().warning("Save timeout - data will be flushed by database manager");
             } catch (Exception e) {
                 plugin.getLogger().log(java.util.logging.Level.SEVERE, "Error saving stats!", e);
             }

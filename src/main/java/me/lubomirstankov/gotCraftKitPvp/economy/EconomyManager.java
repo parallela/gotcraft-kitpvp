@@ -113,11 +113,14 @@ public class EconomyManager {
 
     /**
      * Load a player's balance from database
-     * FIXED: Properly waits for database load to prevent showing wrong balance
+     * FIXED: Properly gives starting balance to new players
      */
     public void loadBalance(UUID uuid) {
+        // Track if this is first load for this player
+        boolean isNewPlayer = !balances.containsKey(uuid);
+
         // Immediately set starting balance to prevent showing 0 or placeholders
-        if (!balances.containsKey(uuid)) {
+        if (isNewPlayer) {
             balances.put(uuid, startingBalance);
         }
 
@@ -125,15 +128,19 @@ public class EconomyManager {
         plugin.getDatabaseManager().getPlayerMoney(uuid).thenAccept(balance -> {
             // Run on main thread to ensure thread safety
             plugin.getServer().getScheduler().runTask(plugin, () -> {
-                if (balance != null && balance >= 0) {
-                    // Player has saved balance - use it
+                if (balance != null && balance > 0.01) {
+                    // Player has actual saved balance - use it
                     balances.put(uuid, balance);
                     plugin.getLogger().info("Loaded balance for " + uuid + ": $" + String.format("%.2f", balance));
-                } else {
-                    // New player - use starting balance
-                    plugin.getLogger().info("New player " + uuid + ", using starting balance: $" + String.format("%.2f", startingBalance));
-                    // Save the starting balance to database immediately
+                } else if (isNewPlayer) {
+                    // New player (was not in cache) and database has 0 or null
+                    // Give starting balance and save it
+                    plugin.getLogger().info("New player " + uuid + ", giving starting balance: $" + String.format("%.2f", startingBalance));
                     saveBalanceAsync(uuid, startingBalance);
+                } else {
+                    // Existing player with 0 balance (spent all money)
+                    balances.put(uuid, balance != null ? balance : 0.0);
+                    plugin.getLogger().info("Loaded balance for " + uuid + ": $" + String.format("%.2f", balance != null ? balance : 0.0));
                 }
             });
         }).exceptionally(ex -> {
@@ -175,7 +182,7 @@ public class EconomyManager {
 
     /**
      * Save all balances to database
-     * CRITICAL: Now waits for all saves to complete
+     * CRITICAL: Now waits for all saves to complete (max 3 seconds to avoid watchdog)
      */
     public void saveAll() {
         if (balances.isEmpty()) {
@@ -191,13 +198,13 @@ public class EconomyManager {
             futures.add(plugin.getDatabaseManager().savePlayerMoney(entry.getKey(), entry.getValue()));
         }
 
-        // Wait for all saves to complete
+        // Wait for all saves to complete (reduced timeout to avoid watchdog)
         try {
             java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0]))
-                    .get(15, java.util.concurrent.TimeUnit.SECONDS);
+                    .get(3, java.util.concurrent.TimeUnit.SECONDS);
             plugin.getLogger().info("Saved " + balances.size() + " player balances successfully!");
         } catch (java.util.concurrent.TimeoutException e) {
-            plugin.getLogger().severe("CRITICAL: Timed out saving player balances!");
+            plugin.getLogger().warning("Save timeout - data will be flushed by database manager");
         } catch (Exception e) {
             plugin.getLogger().log(java.util.logging.Level.SEVERE, "CRITICAL: Error saving player balances!", e);
         }

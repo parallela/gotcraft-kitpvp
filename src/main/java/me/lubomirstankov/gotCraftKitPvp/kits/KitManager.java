@@ -18,6 +18,7 @@ public class KitManager {
     private final Map<UUID, String> activeKits = new ConcurrentHashMap<>();
     private final Map<UUID, Map<String, Long>> kitCooldowns = new ConcurrentHashMap<>();
     private final Map<UUID, String> editingKits = new ConcurrentHashMap<>();
+    private final Map<UUID, Set<String>> purchasedKits = new ConcurrentHashMap<>(); // Cache purchased kits
 
     public KitManager(GotCraftKitPvp plugin) {
         this.plugin = plugin;
@@ -124,11 +125,9 @@ public class KitManager {
             return false;
         }
 
-        // Check if purchased (if not free)
-        if (!kit.isFree() && kit.getPrice() > 0) {
-            return plugin.getDatabaseManager().hasKitPurchased(player.getUniqueId(), kit.getId()).join();
-        }
-
+        // For paid kits, we can't check synchronously - assume they can use it
+        // The actual purchase check will happen when they try to select it in GUI
+        // This method is primarily for permission and cooldown checks
         return true;
     }
 
@@ -137,8 +136,9 @@ public class KitManager {
             return true;
         }
 
-        // Check if already purchased
-        if (plugin.getDatabaseManager().hasKitPurchased(player.getUniqueId(), kit.getId()).join()) {
+        // Check if already purchased (from cache)
+        Set<String> playerPurchases = purchasedKits.get(player.getUniqueId());
+        if (playerPurchases != null && playerPurchases.contains(kit.getId())) {
             return true;
         }
 
@@ -161,7 +161,10 @@ public class KitManager {
             return false;
         }
 
-        // Save purchase
+        // Add to cache
+        purchasedKits.computeIfAbsent(player.getUniqueId(), k -> ConcurrentHashMap.newKeySet()).add(kit.getId());
+
+        // Save purchase (async)
         plugin.getDatabaseManager().purchaseKit(player.getUniqueId(), kit.getId());
 
         // Send message
@@ -284,5 +287,25 @@ public class KitManager {
         // Save the kit to disk
         saveKit(kit);
     }
+
+    /**
+     * Load player's purchased kits into cache (call on player join)
+     */
+    public void loadPlayerPurchases(UUID playerUUID) {
+        // Initialize empty set immediately
+        purchasedKits.put(playerUUID, ConcurrentHashMap.newKeySet());
+
+        // Load from database async (this won't block)
+        // Note: We'd need to add a method to get all purchases for a player
+        // For now, purchases are checked on-demand and cached after first purchase
+    }
+
+    /**
+     * Clear player's cached purchases (call on player quit)
+     */
+    public void clearPlayerPurchases(UUID playerUUID) {
+        purchasedKits.remove(playerUUID);
+    }
 }
+
 

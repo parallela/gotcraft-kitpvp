@@ -147,11 +147,11 @@ database:
 
   # PostgreSQL settings
   postgresql:
-    host: "localhost"
+    host: "37.187.249.11"
     port: 5432
-    database: "gotcraftkitpvp"
-    username: "postgres"
-    password: "password"
+    database: "gotcraft"
+    username: "gotcraft"
+    password: "Sx6iwea6QA"
     # Enable SSL connection
     ssl: false
     # Connection pool settings

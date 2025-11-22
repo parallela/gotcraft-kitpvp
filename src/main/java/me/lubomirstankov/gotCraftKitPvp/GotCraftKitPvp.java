@@ -276,43 +276,50 @@ public final class GotCraftKitPvp extends JavaPlugin {
         getLogger().info("==============================================");
 
         // CRITICAL FIX: Save all data BEFORE reloading configs
-        // This prevents data loss when configs are reloaded
-        if (statsManager != null) {
-            getLogger().info("Saving all stats...");
-            statsManager.saveAllStats();
-        }
+        // Run async to avoid blocking main thread and triggering watchdog
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            if (statsManager != null) {
+                getLogger().info("Saving all stats...");
+                statsManager.saveAllStats();
+            }
 
-        if (economyManager != null) {
-            getLogger().info("Saving all economy data...");
-            economyManager.saveAll();
-        }
+            if (economyManager != null) {
+                getLogger().info("Saving all economy data...");
+                economyManager.saveAll();
+            }
 
-        if (databaseManager != null) {
-            getLogger().info("Flushing database writes...");
-            databaseManager.flushPendingWrites();
-        }
+            if (databaseManager != null) {
+                getLogger().info("Flushing database writes...");
+                databaseManager.flushPendingWrites();
+            }
+        }).thenRun(() -> {
+            // Wait a bit for saves to settle
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
 
-        // Wait for saves to complete
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+            // Now reload configs on main thread
+            getServer().getScheduler().runTask(this, () -> {
+                getLogger().info("All data saved successfully - proceeding with config reload");
 
-        getLogger().info("All data saved successfully - proceeding with config reload");
+                configManager.reload();
+                messageManager.reload();
+                kitManager.reload();
+                zoneManager.reload();
+                abilityManager.reload();
+                leaderboardManager.reload();
 
-        // Now reload configs
-        configManager.reload();
-        messageManager.reload();
-        kitManager.reload();
-        zoneManager.reload();
-        abilityManager.reload();
-        leaderboardManager.reload();
-
-        getLogger().info("==============================================");
-        getLogger().info("Configuration reloaded successfully!");
-        getLogger().info("Player data preserved - no data loss");
-        getLogger().info("==============================================");
+                getLogger().info("==============================================");
+                getLogger().info("Configuration reloaded successfully!");
+                getLogger().info("Player data preserved - no data loss");
+                getLogger().info("==============================================");
+            });
+        }).exceptionally(ex -> {
+            getLogger().log(Level.SEVERE, "Error during reload save operation", ex);
+            return null;
+        });
     }
 
     // Getters

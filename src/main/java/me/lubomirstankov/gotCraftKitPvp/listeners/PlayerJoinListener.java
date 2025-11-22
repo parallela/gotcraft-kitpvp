@@ -27,6 +27,9 @@ public class PlayerJoinListener implements Listener {
         // Load player balance
         plugin.getEconomyManager().loadBalance(player.getUniqueId());
 
+        // Load kit purchases
+        plugin.getKitManager().loadPlayerPurchases(player.getUniqueId());
+
         // Create scoreboard
         plugin.getScoreboardManager().createScoreboard(player);
 

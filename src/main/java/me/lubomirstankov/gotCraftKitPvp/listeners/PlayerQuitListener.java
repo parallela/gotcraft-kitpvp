@@ -27,6 +27,9 @@ public class PlayerQuitListener implements Listener {
         // Clear active kit
         plugin.getKitManager().clearActiveKit(event.getPlayer().getUniqueId());
 
+        // Clear kit purchases cache
+        plugin.getKitManager().clearPlayerPurchases(event.getPlayer().getUniqueId());
+
         // Clear zone data
         plugin.getZoneManager().clearPlayerZone(event.getPlayer().getUniqueId());
 

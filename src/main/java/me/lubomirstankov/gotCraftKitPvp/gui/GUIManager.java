@@ -220,30 +220,35 @@ public class GUIManager {
 
     public void openTopKillsGUI(Player player) {
         String title = ChatColor.translateAlternateColorCodes('&', "&6&lTop Players - Kills");
-        Inventory inv = Bukkit.createInventory(null, 54, title);
 
-        List<PlayerStats> topPlayers = plugin.getDatabaseManager().getTopKills(45).join();
+        // Load async to avoid blocking
+        plugin.getDatabaseManager().getTopKills(45).thenAccept(topPlayers -> {
+            // Run on main thread
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                Inventory inv = Bukkit.createInventory(null, 54, title);
 
-        for (int i = 0; i < Math.min(topPlayers.size(), 45); i++) {
-            PlayerStats stats = topPlayers.get(i);
+                for (int i = 0; i < Math.min(topPlayers.size(), 45); i++) {
+                    PlayerStats stats = topPlayers.get(i);
 
-            ItemStack item = createItem(Material.PLAYER_HEAD,
-                    ChatColor.YELLOW + "#" + (i + 1) + " " + stats.getName(),
-                    Arrays.asList(
-                            ChatColor.GRAY + "Kills: " + ChatColor.GREEN + stats.getKills(),
-                            ChatColor.GRAY + "Deaths: " + ChatColor.RED + stats.getDeaths(),
-                            ChatColor.GRAY + "K/D: " + ChatColor.YELLOW + stats.getFormattedKDR()
-                    ));
+                    ItemStack item = createItem(Material.PLAYER_HEAD,
+                            ChatColor.YELLOW + "#" + (i + 1) + " " + stats.getName(),
+                            Arrays.asList(
+                                    ChatColor.GRAY + "Kills: " + ChatColor.GREEN + stats.getKills(),
+                                    ChatColor.GRAY + "Deaths: " + ChatColor.RED + stats.getDeaths(),
+                                    ChatColor.GRAY + "K/D: " + ChatColor.YELLOW + stats.getFormattedKDR()
+                            ));
 
-            inv.setItem(i, item);
-        }
+                    inv.setItem(i, item);
+                }
 
-        // Back button
-        inv.setItem(49, createItem(Material.ARROW, plugin.getMessageManager().getMessage("gui-back"), new ArrayList<>()));
+                // Back button
+                inv.setItem(49, createItem(Material.ARROW, plugin.getMessageManager().getMessage("gui-back"), new ArrayList<>()));
 
-        player.openInventory(inv);
-        plugin.getLogger().info("Opened leaderboard-kills GUI for " + player.getName());
-        openGUIs.put(player.getUniqueId(), "leaderboard-kills");
+                player.openInventory(inv);
+                plugin.getLogger().info("Opened leaderboard-kills GUI for " + player.getName());
+                openGUIs.put(player.getUniqueId(), "leaderboard-kills");
+            });
+        });
     }
 
     public ItemStack createItem(Material material, String name, List<String> lore) {
