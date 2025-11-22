@@ -137,20 +137,28 @@ economy:
 
 # Database Settings
 database:
-  # Type: SQLITE or MYSQL
-  type: "SQLITE"
-  # MySQL settings (only if type is MYSQL)
-  mysql:
+  # Type: POSTGRESQL (SQLite and MySQL are no longer supported)
+  type: "POSTGRESQL"
+
+  # AutoSave Interval (in minutes)
+  # Automatically saves all player data every X minutes to prevent data loss
+  # Set to 0 to disable (NOT recommended)
+  autosave-interval: 1
+
+  # PostgreSQL settings
+  postgresql:
     host: "localhost"
-    port: 3306
+    port: 5432
     database: "gotcraftkitpvp"
-    username: "root"
+    username: "postgres"
     password: "password"
+    # Enable SSL connection
+    ssl: false
     # Connection pool settings
     pool:
       maximum-pool-size: 10
       minimum-idle: 2
-      connection-timeout: 5000
+      connection-timeout: 10000
 
 # Leaderboards
 leaderboards:

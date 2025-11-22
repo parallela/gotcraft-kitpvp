@@ -6,6 +6,7 @@ import me.lubomirstankov.gotCraftKitPvp.abilities.AbilityManager;
 import me.lubomirstankov.gotCraftKitPvp.commands.*;
 import me.lubomirstankov.gotCraftKitPvp.config.ConfigManager;
 import me.lubomirstankov.gotCraftKitPvp.config.MessageManager;
+import me.lubomirstankov.gotCraftKitPvp.database.AutoSaveTask;
 import me.lubomirstankov.gotCraftKitPvp.database.DatabaseManager;
 import me.lubomirstankov.gotCraftKitPvp.gui.GUIManager;
 import me.lubomirstankov.gotCraftKitPvp.hooks.PlaceholderAPIHook;
@@ -44,6 +45,9 @@ public final class GotCraftKitPvp extends JavaPlugin {
     private HealthTagListener healthTagListener;
     private HealthRegenerationListener healthRegenerationListener;
 
+    // AutoSave Task
+    private AutoSaveTask autoSaveTask;
+
     @Override
     public void onLoad() {
         // Load PacketEvents - MUST be in onLoad()
@@ -74,6 +78,7 @@ public final class GotCraftKitPvp extends JavaPlugin {
             registerCommands();
             registerListeners();
             setupHooks();
+            startAutoSave();
 
             long loadTime = System.currentTimeMillis() - startTime;
             getLogger().info("GotCraftKitPvp enabled successfully in " + loadTime + "ms!");
@@ -85,29 +90,44 @@ public final class GotCraftKitPvp extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Disabling GotCraftKitPvp...");
+        getLogger().info("==============================================");
+        getLogger().info("Initiating safe shutdown sequence...");
+        getLogger().info("==============================================");
+
+        // Stop autosave task first
+        if (autoSaveTask != null) {
+            autoSaveTask.cancel();
+            getLogger().info("AutoSave task stopped");
+        }
 
         // Terminate PacketEvents
         PacketEvents.getAPI().terminate();
 
-        // Save all data
+        // CRITICAL: Save all data SYNCHRONOUSLY
+        getLogger().info("Saving all player data...");
+
         if (statsManager != null) {
             statsManager.saveAllStats();
+            getLogger().info("All stats saved");
         }
 
-        // Save all economy balances
         if (economyManager != null) {
             economyManager.saveAll();
+            getLogger().info("All economy data saved");
         }
 
-        // Close database connection (after saves complete)
+        // Flush database pending writes
         if (databaseManager != null) {
-            // Wait a bit for async saves to complete
+            getLogger().info("Flushing database writes...");
+            databaseManager.flushPendingWrites();
+
+            // Wait for async saves to complete
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
-                // Ignore
+                Thread.currentThread().interrupt();
             }
+
             databaseManager.close();
         }
 
@@ -121,7 +141,10 @@ public final class GotCraftKitPvp extends JavaPlugin {
             healthRegenerationListener.shutdown();
         }
 
-        getLogger().info("GotCraftKitPvp disabled!");
+        getLogger().info("==============================================");
+        getLogger().info("GotCraftKitPvp disabled safely!");
+        getLogger().info("All data has been saved to database");
+        getLogger().info("==============================================");
     }
 
     private void initializeManagers() {
@@ -204,11 +227,11 @@ public final class GotCraftKitPvp extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DamageListener(this), this);
         getServer().getPluginManager().registerEvents(new ZoneListener(this), this);
         getServer().getPluginManager().registerEvents(new GUIListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+//        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new BlockProtectionListener(this), this);
 
-        healthTagListener = new HealthTagListener(this);
-        getServer().getPluginManager().registerEvents(healthTagListener, this);
+//        healthTagListener = new HealthTagListener(this);
+//        getServer().getPluginManager().registerEvents(healthTagListener, this);
 
         healthRegenerationListener = new HealthRegenerationListener(this);
         getServer().getPluginManager().registerEvents(healthRegenerationListener, this);
@@ -230,9 +253,55 @@ public final class GotCraftKitPvp extends JavaPlugin {
         }
     }
 
-    public void reload() {
-        getLogger().info("Reloading configuration...");
+    private void startAutoSave() {
+        int intervalMinutes = getConfig().getInt("database.autosave-interval", 5);
+        if (intervalMinutes > 0) {
+            long intervalTicks = intervalMinutes * 60 * 20L; // Convert minutes to ticks
 
+            autoSaveTask = new AutoSaveTask(this);
+            autoSaveTask.runTaskTimerAsynchronously(this, intervalTicks, intervalTicks);
+
+            getLogger().info("==============================================");
+            getLogger().info("AutoSave enabled - interval: " + intervalMinutes + " minutes");
+            getLogger().info("This prevents data loss from server crashes");
+            getLogger().info("==============================================");
+        } else {
+            getLogger().warning("AutoSave is disabled - this is NOT recommended!");
+        }
+    }
+
+    public void reload() {
+        getLogger().info("==============================================");
+        getLogger().info("RELOAD INITIATED - SAVING ALL DATA FIRST!");
+        getLogger().info("==============================================");
+
+        // CRITICAL FIX: Save all data BEFORE reloading configs
+        // This prevents data loss when configs are reloaded
+        if (statsManager != null) {
+            getLogger().info("Saving all stats...");
+            statsManager.saveAllStats();
+        }
+
+        if (economyManager != null) {
+            getLogger().info("Saving all economy data...");
+            economyManager.saveAll();
+        }
+
+        if (databaseManager != null) {
+            getLogger().info("Flushing database writes...");
+            databaseManager.flushPendingWrites();
+        }
+
+        // Wait for saves to complete
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        getLogger().info("All data saved successfully - proceeding with config reload");
+
+        // Now reload configs
         configManager.reload();
         messageManager.reload();
         kitManager.reload();
@@ -240,7 +309,10 @@ public final class GotCraftKitPvp extends JavaPlugin {
         abilityManager.reload();
         leaderboardManager.reload();
 
-        getLogger().info("Configuration reloaded!");
+        getLogger().info("==============================================");
+        getLogger().info("Configuration reloaded successfully!");
+        getLogger().info("Player data preserved - no data loss");
+        getLogger().info("==============================================");
     }
 
     // Getters

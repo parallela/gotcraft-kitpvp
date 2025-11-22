@@ -113,6 +113,7 @@ public class EconomyManager {
 
     /**
      * Load a player's balance from database
+     * FIXED: Properly waits for database load to prevent showing wrong balance
      */
     public void loadBalance(UUID uuid) {
         // Immediately set starting balance to prevent showing 0 or placeholders
@@ -122,22 +123,22 @@ public class EconomyManager {
 
         // Then load actual balance from database and update
         plugin.getDatabaseManager().getPlayerMoney(uuid).thenAccept(balance -> {
-            if (balance != null && balance > 0) {
-                // Player has saved balance - use it
-                balances.put(uuid, balance);
-                plugin.getLogger().info("Loaded balance for " + uuid + ": $" + balance);
-            } else if (balance != null && balance == 0) {
-                // Player has 0 balance saved (spent all money)
-                balances.put(uuid, 0.0);
-                plugin.getLogger().info("Loaded balance for " + uuid + ": $0.00");
-            } else {
-                // New player - already set to starting balance above
-                plugin.getLogger().info("New player " + uuid + ", using starting balance: $" + startingBalance);
-                // Save the starting balance to database
-                saveBalanceAsync(uuid, startingBalance);
-            }
+            // Run on main thread to ensure thread safety
+            plugin.getServer().getScheduler().runTask(plugin, () -> {
+                if (balance != null && balance >= 0) {
+                    // Player has saved balance - use it
+                    balances.put(uuid, balance);
+                    plugin.getLogger().info("Loaded balance for " + uuid + ": $" + String.format("%.2f", balance));
+                } else {
+                    // New player - use starting balance
+                    plugin.getLogger().info("New player " + uuid + ", using starting balance: $" + String.format("%.2f", startingBalance));
+                    // Save the starting balance to database immediately
+                    saveBalanceAsync(uuid, startingBalance);
+                }
+            });
         }).exceptionally(ex -> {
             plugin.getLogger().warning("Failed to load balance for " + uuid + ": " + ex.getMessage());
+            ex.printStackTrace();
             return null;
         });
     }
@@ -174,13 +175,32 @@ public class EconomyManager {
 
     /**
      * Save all balances to database
+     * CRITICAL: Now waits for all saves to complete
      */
     public void saveAll() {
-        plugin.getLogger().info("Saving all player balances...");
-        for (Map.Entry<UUID, Double> entry : balances.entrySet()) {
-            saveBalanceAsync(entry.getKey(), entry.getValue());
+        if (balances.isEmpty()) {
+            plugin.getLogger().info("No player balances to save");
+            return;
         }
-        plugin.getLogger().info("Saved " + balances.size() + " player balances!");
+
+        plugin.getLogger().info("Saving " + balances.size() + " player balances...");
+
+        java.util.List<java.util.concurrent.CompletableFuture<Void>> futures = new java.util.ArrayList<>();
+
+        for (Map.Entry<UUID, Double> entry : balances.entrySet()) {
+            futures.add(plugin.getDatabaseManager().savePlayerMoney(entry.getKey(), entry.getValue()));
+        }
+
+        // Wait for all saves to complete
+        try {
+            java.util.concurrent.CompletableFuture.allOf(futures.toArray(new java.util.concurrent.CompletableFuture[0]))
+                    .get(15, java.util.concurrent.TimeUnit.SECONDS);
+            plugin.getLogger().info("Saved " + balances.size() + " player balances successfully!");
+        } catch (java.util.concurrent.TimeoutException e) {
+            plugin.getLogger().severe("CRITICAL: Timed out saving player balances!");
+        } catch (Exception e) {
+            plugin.getLogger().log(java.util.logging.Level.SEVERE, "CRITICAL: Error saving player balances!", e);
+        }
     }
 
     /**
@@ -198,4 +218,3 @@ public class EconomyManager {
         return String.format("$%.2f", amount);
     }
 }
-

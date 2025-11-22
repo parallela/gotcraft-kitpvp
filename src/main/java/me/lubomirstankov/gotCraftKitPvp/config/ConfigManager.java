@@ -160,11 +160,15 @@ public class ConfigManager {
     }
 
     public String getDatabaseType() {
-        return config.getString("database.type", "SQLITE");
+        return config.getString("database.type", "POSTGRESQL");
     }
 
     public boolean isAbilitiesEnabled() {
         return config.getBoolean("abilities.enabled", true);
+    }
+
+    public int getAutoSaveInterval() {
+        return config.getInt("database.autosave-interval", 5);
     }
 
     // Health regeneration settings

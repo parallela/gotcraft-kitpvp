@@ -180,9 +180,10 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
     private void handleSetZone(Player player, String[] args) {
         String zoneType = args[1].toUpperCase();
 
-        if (!zoneType.equals("SAFE") && !zoneType.equals("PVP") &&
-            !zoneType.equals("DOUBLE_DAMAGE") && !zoneType.equals("GRAVITY") &&
-            !zoneType.equals("LEVITATION") && !zoneType.equals("NAUSEA")) {
+        // Validate zone type
+        try {
+            Zone.ZoneType.valueOf(zoneType);
+        } catch (IllegalArgumentException e) {
             plugin.getMessageManager().sendRawMessage(player, "<red>Invalid zone type! Use: SAFE, PVP, DOUBLE_DAMAGE, GRAVITY, LEVITATION, NAUSEA");
             return;
         }
@@ -209,8 +210,8 @@ public class KitPvpCommand implements CommandExecutor, TabCompleter {
             var pos2 = plugin.getZoneManager().getZoneSelection().getPos2(player.getUniqueId());
 
             // Create the zone
-            Zone.ZoneType type = Zone.ZoneType.valueOf(zoneType);
-            Zone zone = new Zone(zoneName, type, player.getWorld(), pos1, pos2);
+            Zone.ZoneType zoneTypeEnum = Zone.ZoneType.valueOf(zoneType);
+            Zone zone = new Zone(zoneName, zoneTypeEnum, player.getWorld(), pos1, pos2);
             plugin.getZoneManager().saveZone(zone);
 
             // Clear selection
